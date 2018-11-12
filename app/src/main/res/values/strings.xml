@@ -4,4 +4,13 @@
     <string name="new_maze">NEW MAZE</string>
     <string name="load_maze">LOAD MAZE</string>
     <string name="generation_maze">Choose a generation algorithm</string>
+    <string name="maze_activity">AMazeActivity</string>
+    <string name="gen_activity">GeneratingActivity</string>
+    <string name="ani_activity">PlayAnimationActivity</string>
+    <string name="man_activity">PlayManualActivity</string>
+    <string name="win_activity">WinningActivity</string>
+    <string name="los_activity">LosingActivity</string>
+    <string name="catch_me">Can U Catch Me?!</string>
+    <string name="game_rule">Catch the Murderer by getting out of the maze!</string>
+    <string name="murder_progress">Murder is gonna happening......</string>
 </resources>
