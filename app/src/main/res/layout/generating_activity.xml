@@ -31,7 +31,6 @@
         android:layout_marginBottom="90dp"
         android:max="100"
         android:progressBackgroundTint="@android:color/holo_blue_dark"
-        android:progressDrawable="@drawable/custom_progressbar"
         android:progressTint="@android:color/holo_red_dark" />
 
     <TextView
@@ -57,4 +56,24 @@
         android:text="@string/murder_progress"
         android:textColor="@android:color/white"
         android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/game_rule"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="27dp"
+        android:onClick="backButtonClicked"
+        android:text="@string/back" />
+
+    <TextView
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-90dp"
+        android:textColor="@android:color/white"
+        android:text="@string/loading" />
 </RelativeLayout>

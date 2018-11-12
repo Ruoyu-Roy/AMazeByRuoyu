@@ -50,7 +50,7 @@ public class AMazeActivity extends AppCompatActivity {
         initializeVariable();
         setOnSeekBarListener();
         spinnerSet();
-        mediaPlayer = MediaPlayer.create(this, R.raw.title_music);
+        mediaPlayer = MediaPlayer.create(this, R.raw.title_music2);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
     }
@@ -133,10 +133,40 @@ public class AMazeActivity extends AppCompatActivity {
         intent.putExtra("newMaze", true);
         intent.putExtra("skillLevel", skillLevel);
         intent.putExtra("generateAlgorithm", genAlgorithm);
-        intent.putExtra("drvierAlgorithm", drvAlgorithm);
+        intent.putExtra("driverAlgorithm", drvAlgorithm);
 
+        mediaPlayer.stop();
         startActivity(intent);
+        finish();
     }
 
+    public void loadOldMaze(View view) {
+        int skillLevel = seekBar.getProgress();
+        String genAlgorithm = gen_spinner.getSelectedItem().toString();
+        Log.v(LOG_V, "Old Maze Button Clicked: skillLevel: "+skillLevel+" generating algorithm: "
+        +genAlgorithm);
+        Intent intent = new Intent(this, GeneratingActivity.class);
+        intent.putExtra("newMaze", false);
+        intent.putExtra("skillLevel", skillLevel);
+        intent.putExtra("generateAlgorithm", genAlgorithm);
+
+        mediaPlayer.stop();
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onResume() {
+        mediaPlayer.start();
+        super.onResume();
+    }
+
+    @Override
+	public void onPause() {
+		super.onPause();
+		if (mediaPlayer.isPlaying()) {
+			mediaPlayer.pause();
+		}
+	}
 
 }

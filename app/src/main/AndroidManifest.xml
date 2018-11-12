@@ -20,6 +20,12 @@
         <activity android:name=".gui.GeneratingActivity"
             android:label="@string/gen_activity">
         </activity>
+        <activity android:name=".gui.PlayAnimationActivity"
+            android:label="@string/ani_activity">
+        </activity>
+        <activity android:name=".gui.PlayManuallyActivity"
+            android:label="@string/man_activity">
+        </activity>
     </application>
 
 </manifest>

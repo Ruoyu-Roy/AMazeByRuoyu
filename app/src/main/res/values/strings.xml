@@ -13,4 +13,6 @@
     <string name="catch_me">Can U Catch Me?!</string>
     <string name="game_rule">Catch the Murderer by getting out of the maze!</string>
     <string name="murder_progress">Murder is gonna happening......</string>
+    <string name="back">Back</string>
+    <string name="loading">Loading: 0%</string>
 </resources>
