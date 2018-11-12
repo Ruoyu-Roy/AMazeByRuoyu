@@ -1,6 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/door"
+    tools:context="ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui.AMazeActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="229dp"
+        android:max="15" />
+
+    <TextView
+        android:id="@+id/difLevel"
+        android:layout_width="213dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="256dp"
+        android:text="@string/cur_lvl"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/difLevel"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="192dp"
+        android:layout_marginBottom="19dp"
+        android:text="@string/new_maze" />
+
+    <Button
+        android:id="@+id/revisit"
+        android:layout_width="110dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/start"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="82dp"
+        android:layout_marginBottom="19dp"
+        android:text="@string/load_maze" />
+
+    <Spinner
+        android:id="@+id/gen_spinner"
+        android:layout_width="146dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/revisit"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="71dp"
+        android:layout_marginEnd="-251dp"
+        android:layout_marginBottom="161dp"
+        android:background="@android:color/background_light" />
+
+    <Spinner
+        android:id="@+id/drv_spinner"
+        android:layout_width="146dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/revisit"
+        android:layout_alignTop="@+id/gen_spinner"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="71dp"
+        android:background="@android:color/background_light" />
+
+    <TextView
+        android:id="@+id/gen_text"
+        android:layout_width="150dp"
+        android:layout_height="32dp"
+        android:layout_alignTop="@+id/gen_spinner"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:text="Generating Method: "
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="149dp"
+        android:layout_height="42dp"
+        android:layout_alignStart="@+id/gen_text"
+        android:layout_alignTop="@+id/drv_spinner"
+        android:text="Driver Method: "
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="221dp"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        android:text="Welcome to The World Of Conan"
+        android:textSize="35sp"
+        android:gravity="center"
+        android:textColor="#CD5C5C"/>
+</RelativeLayout>

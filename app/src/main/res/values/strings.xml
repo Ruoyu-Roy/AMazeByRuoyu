@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AMazeByRuoyu</string>
+    <string name="cur_lvl">Current level: 0/15</string>
+    <string name="new_maze">NEW MAZE</string>
+    <string name="load_maze">LOAD MAZE</string>
+    <string name="generation_maze">Choose a generation algorithm</string>
 </resources>
