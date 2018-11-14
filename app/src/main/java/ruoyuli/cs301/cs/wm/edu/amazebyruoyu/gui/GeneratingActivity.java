@@ -30,6 +30,7 @@ public class GeneratingActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private String LOG_V = "Generating Activity: ";
     private int progress = 0;
+    private MyTask task = new MyTask();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,12 +46,13 @@ public class GeneratingActivity extends AppCompatActivity {
         if (newMaze) {
             skillLevel = previousIntent.getIntExtra("skillLevel", 0);
             setUpVariables();
-            updateProgress();
+            System.out.println(driverAlgorithm);
+            task.execute();
 
         } else {
             skillLevel = previousIntent.getIntExtra("skillLevel", 0);
             setUpVariables();
-            updateProgress();
+            task.execute();
         }
     }
 
@@ -68,8 +70,7 @@ public class GeneratingActivity extends AppCompatActivity {
 
     }
 
-    public void updateProgress() {
-        new AsyncTask<Void, Integer, Void>() {
+    class MyTask extends AsyncTask<Void, Integer, Void> {
             @Override
             public Void doInBackground(Void... params) {
                 while (progress < 100) {
@@ -81,6 +82,8 @@ public class GeneratingActivity extends AppCompatActivity {
                     Log.v(LOG_V, "Progress: " + progress);
                     publishProgress(progress);
                     progress++;
+                    if (isCancelled())
+                        break;
                 }
                 return null;
             }
@@ -95,28 +98,38 @@ public class GeneratingActivity extends AppCompatActivity {
 
             @Override
             public void onPreExecute() {
+                progress = 0;
                 progressBar.setProgress(0);
             }
 
             @Override
             public void onPostExecute(Void result) {
+                super.onPostExecute(result);
                 progressBar.setProgress(100);
                 loading.setText("Murder Happens!");
                 Toast.makeText(getApplicationContext(), "Maze ready", Toast.LENGTH_SHORT).show();
+                System.out.println(driverAlgorithm);
                 switchToPlay();
             }
-        }.execute();
-    }
+
+            public void resetTask(){
+                task.cancel(true);
+                task = new MyTask();
+            }
+
+        }
+
 
     public void backButtonClicked(View view) {
         mediaPlayer.stop();
+        task.resetTask();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void switchToPlay(){
-        if (driverAlgorithm == "Manual") {
+        if (driverAlgorithm.equals("Manual")) {
             Log.v(LOG_V, "Manual Driver implemented. User will control the robot");
             Intent i = new Intent(this, PlayManuallyActivity.class);
             mediaPlayer.stop();
@@ -124,7 +137,7 @@ public class GeneratingActivity extends AppCompatActivity {
             finish();
         }
         else{
-            Log.v(LOG_V,driverAlgorithm + "Driver implemented. Robot will go for exit itself");
+            Log.v(LOG_V,driverAlgorithm + " Driver implemented. Robot will go for exit itself");
             Intent i = new Intent(this, PlayAnimationActivity.class);
             i.putExtra("driverAlgorithm", driverAlgorithm);
             mediaPlayer.stop();

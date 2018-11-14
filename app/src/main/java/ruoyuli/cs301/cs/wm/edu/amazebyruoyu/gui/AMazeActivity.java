@@ -41,6 +41,7 @@ public class AMazeActivity extends AppCompatActivity {
             Expl = "Explorer",
             Pledge = "Pledge";
     protected String LOG_V = "AMazeActivity";
+    private boolean manual = false;
 
 
     @Override
@@ -113,7 +114,7 @@ public class AMazeActivity extends AppCompatActivity {
         driver_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(LOG_V, "Generation Algorithm Selected: " + driver_spinner.getSelectedItem().toString());
+                Log.v(LOG_V, "Driver Algorithm Selected: " + driver_spinner.getSelectedItem().toString());
             }
 
             @Override
@@ -128,12 +129,16 @@ public class AMazeActivity extends AppCompatActivity {
         int skillLevel = seekBar.getProgress();
         String genAlgorithm = gen_spinner.getSelectedItem().toString();
         String drvAlgorithm = driver_spinner.getSelectedItem().toString();
+        if (drvAlgorithm == "Manual") {
+            manual = true;
+        }
         Intent intent = new Intent(this, GeneratingActivity.class);
 
         intent.putExtra("newMaze", true);
         intent.putExtra("skillLevel", skillLevel);
         intent.putExtra("generateAlgorithm", genAlgorithm);
         intent.putExtra("driverAlgorithm", drvAlgorithm);
+        intent.putExtra("manual", manual);
 
         mediaPlayer.stop();
         startActivity(intent);
@@ -143,12 +148,14 @@ public class AMazeActivity extends AppCompatActivity {
     public void loadOldMaze(View view) {
         int skillLevel = seekBar.getProgress();
         String genAlgorithm = gen_spinner.getSelectedItem().toString();
+        String drvAlgorithm = driver_spinner.getSelectedItem().toString();
         Log.v(LOG_V, "Old Maze Button Clicked: skillLevel: "+skillLevel+" generating algorithm: "
         +genAlgorithm);
         Intent intent = new Intent(this, GeneratingActivity.class);
         intent.putExtra("newMaze", false);
         intent.putExtra("skillLevel", skillLevel);
         intent.putExtra("generateAlgorithm", genAlgorithm);
+        intent.putExtra("driverAlgorithm", drvAlgorithm);
 
         mediaPlayer.stop();
         startActivity(intent);

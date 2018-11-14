@@ -15,4 +15,20 @@
     <string name="murder_progress">Murder is gonna happening......</string>
     <string name="back">Back</string>
     <string name="loading">Loading: 0%</string>
+    <string name="map">MAP</string>
+    <string name="map_on">MAP: On</string>
+    <string name="map_off">MAP: Off</string>
+    <string name="solution">Clue</string>
+    <string name="clue_on">Clue: On</string>
+    <string name="clue_off">Clue: Off</string>
+    <string name="show_wall">Walls</string>
+    <string name="wall_on">Walls: On</string>
+    <string name="wall_off">Walls: Off</string>
+    <string name="up">Move Up</string>
+    <string name="left">Move Left</string>
+    <string name="right">Move Right</string>
+    <string name="Go2win">Go2Winning</string>
+    <string name="Go2lose">Go2Losing</string>
+    <string name="size_up">size up</string>
+    <string name="size_down">size down</string>
 </resources>
