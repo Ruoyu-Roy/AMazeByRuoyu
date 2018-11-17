@@ -17,6 +17,7 @@
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:onClick="toWin"
         android:text="@string/Go2win" />
 
     <ImageButton
@@ -26,6 +27,7 @@
         android:layout_below="@+id/go2win"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/up"
+        android:onClick="moveUp"
         app:srcCompat="@drawable/up_arrow" />
 
     <ImageButton
@@ -35,6 +37,7 @@
         android:layout_below="@+id/upbutton"
         android:layout_toStartOf="@+id/upbutton"
         android:contentDescription="@string/left"
+        android:onClick="moveLeft"
         app:srcCompat="@drawable/left_arrow" />
 
     <ImageButton
@@ -44,6 +47,7 @@
         android:layout_below="@+id/upbutton"
         android:layout_toEndOf="@+id/upbutton"
         android:contentDescription="@string/right"
+        android:onClick="moveRight"
         app:srcCompat="@drawable/right_arrow" />
 
     <ToggleButton
@@ -87,6 +91,7 @@
         android:layout_marginTop="145dp"
         android:layout_marginEnd="5dp"
         android:contentDescription="@string/size_up"
+        android:onClick="sizeUp"
         app:srcCompat="@drawable/inre_map" />
 
     <ImageButton
@@ -98,6 +103,7 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="145dp"
         android:contentDescription="@string/size_down"
+        android:onClick="sizeDown"
         app:srcCompat="@drawable/dre_map" />
 
     <Button
@@ -106,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:onClick="backButtonClicked"
         android:text="@string/back" />
 
 </RelativeLayout>

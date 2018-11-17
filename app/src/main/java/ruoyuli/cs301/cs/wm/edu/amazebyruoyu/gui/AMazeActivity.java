@@ -51,6 +51,7 @@ public class AMazeActivity extends AppCompatActivity {
         initializeVariable();
         setOnSeekBarListener();
         spinnerSet();
+        addOnSpinnerListener();
         mediaPlayer = MediaPlayer.create(this, R.raw.title_music2);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();

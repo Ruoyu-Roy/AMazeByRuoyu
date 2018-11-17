@@ -31,4 +31,15 @@
     <string name="Go2lose">Go2Losing</string>
     <string name="size_up">size up</string>
     <string name="size_down">size down</string>
+    <string name="start">START</string>
+    <string name="pause">PAUSE</string>
+    <string name="winning0">Congratulations!</string>
+    <string name="winning1">You Successfully Catch the Murderer!</string>
+    <string name="instruction">Click Button "BACK" to restart the game.</string>
+    <string name="shortest_path">The Possible Shortest Path: 0</string>
+    <string name="user_path">You use 0 steps to win.</string>
+    <string name="energy">Energy Consumption: 0</string>
+    <string name="battery">ENERGY: 3000</string>
+    <string name="losing0">News!!!</string>
+    <string name="losing1">Murderer escaped!!!</string>
 </resources>

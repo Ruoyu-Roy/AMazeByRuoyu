@@ -26,6 +26,12 @@
         <activity android:name=".gui.PlayManuallyActivity"
             android:label="@string/man_activity">
         </activity>
+        <activity android:name=".gui.WinningActivity"
+            android:label="WinningActivity">
+        </activity>
+        <activity android:name=".gui.LosingActivity"
+            android:label="LosingActivity">
+        </activity>
     </application>
 
 </manifest>

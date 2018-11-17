@@ -12,11 +12,12 @@
 
     <Button
         android:id="@+id/go2win"
-        android:layout_width="290dp"
-        android:layout_height="309dp"
+        android:layout_width="284dp"
+        android:layout_height="235dp"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:onClick="toWin"
         android:text="@string/Go2win" />
 
     <ImageButton
@@ -28,6 +29,7 @@
         android:layout_marginTop="145dp"
         android:layout_marginEnd="5dp"
         android:contentDescription="@string/size_up"
+        android:onClick="sizeUp"
         app:srcCompat="@drawable/inre_map" />
 
     <ImageButton
@@ -38,6 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="145dp"
+        android:onClick="sizeDown"
         android:contentDescription="@string/size_down"
         app:srcCompat="@drawable/dre_map" />
 
@@ -75,14 +78,15 @@
 
     <Button
         android:id="@+id/go2lose"
-        android:layout_width="290dp"
-        android:layout_height="wrap_content"
+        android:layout_width="69dp"
+        android:layout_height="65dp"
         android:layout_alignStart="@+id/go2win"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginBottom="22dp"
-        android:textColor="@android:color/black"
-        android:text="@string/Go2lose" />
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="47dp"
+        android:onClick="toLose"
+        android:text="@string/Go2lose"
+        android:textColor="@android:color/black" />
 
     <Button
         android:id="@+id/backP"
@@ -90,6 +94,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="0dp"
+        android:onClick="backButtonClicked"
         android:text="@string/back" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/go2win"
+        android:layout_alignEnd="@+id/go2win"
+        android:layout_alignBottom="@+id/energy"
+        android:layout_marginEnd="-24dp"
+        android:layout_marginBottom="-1dp" />
+
+    <TextView
+        android:id="@+id/energy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cluebuttonP"
+        android:layout_alignStart="@+id/go2win"
+        android:text="@string/battery" />
+
+    <ToggleButton
+        android:id="@+id/pausetoggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/energy"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:text="@string/start"
+        android:textOff="@string/pause"
+        android:textOn="@string/start" />
+
 
 </RelativeLayout>

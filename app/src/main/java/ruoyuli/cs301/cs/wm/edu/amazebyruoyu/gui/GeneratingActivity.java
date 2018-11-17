@@ -39,6 +39,7 @@ public class GeneratingActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.loading_music);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        task.resetTask();
         Intent previousIntent = getIntent();
         newMaze = previousIntent.getBooleanExtra("newMaze", true);
         generateAlgorithm = previousIntent.getStringExtra("generationAlgorithm");
@@ -121,6 +122,7 @@ public class GeneratingActivity extends AppCompatActivity {
 
 
     public void backButtonClicked(View view) {
+        Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
         task.resetTask();
         Intent intent = new Intent(this, AMazeActivity.class);
