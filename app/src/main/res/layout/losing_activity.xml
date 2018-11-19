@@ -86,5 +86,6 @@
         android:layout_alignEnd="@+id/losing1"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="49dp"
+        android:onClick="backButtonClicked"
         android:text="@string/back" />
 </RelativeLayout>
