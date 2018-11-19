@@ -71,6 +71,7 @@ public class AMazeActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 difLevel.setText("Current Level:" + Integer.toString(progress) + "/15");
                 Log.v(LOG_V, "Current level: " + progress);
+                Toast.makeText(getApplicationContext(), "Current level: " + progress, Toast.LENGTH_SHORT).show();
             }
 
             @Override

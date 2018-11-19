@@ -113,9 +113,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Wall_Button clicked. Show the currently visible walls");
+                    Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
+                    Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -130,6 +132,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 }
                 else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
+
+                    Toast.makeText(getApplicationContext(), "Size Button Hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
             }
@@ -139,9 +143,11 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Clue_Buttons clicked. Show the solution.");
+                    Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.v(LOG_V, "Clue_Button unclicked. Hide the solution");
+                    Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -164,9 +170,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     public void sizeUp(View view){
         Log.v(LOG_V, "Increment map size.");
+        Toast.makeText(getApplicationContext(), "Map Inre", Toast.LENGTH_SHORT).show();
     }
 
     public void sizeDown(View view){
         Log.v(LOG_V, "Decrement map size.");
+
+        Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
     }
 }
