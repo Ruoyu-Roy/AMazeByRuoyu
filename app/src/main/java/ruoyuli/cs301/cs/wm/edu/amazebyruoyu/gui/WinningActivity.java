@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.media.MediaPlayer;
+import android.widget.Toast;
+
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
@@ -18,6 +21,7 @@ public class WinningActivity extends AppCompatActivity {
     TextView win4;
     TextView win5;
     Button back;
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
     private String drvalgo;
     private int shortestPath;
@@ -31,6 +35,9 @@ public class WinningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.winning_activity);
         setUpVariables();
+        mediaPlayer = MediaPlayer.create(this, R.raw.winning_music);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
         Intent preIntent = getIntent();
         drvalgo = preIntent.getStringExtra("drvalgo");
         shortestPath = preIntent.getIntExtra("shortestPath", 30);
@@ -57,6 +64,8 @@ public class WinningActivity extends AppCompatActivity {
 
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
+        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        mediaPlayer.stop();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -66,5 +75,19 @@ public class WinningActivity extends AppCompatActivity {
         win2.setText("The Possible Shortest Path: " + Integer.toString(shortestPath));
         win3.setText("You use " + Integer.toString(userPath) + " steps to win");
         win4.setText("Energy Consumption: " + Integer.toString(energyConsump));
+    }
+
+    @Override
+    public void onResume() {
+        mediaPlayer.start();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
     }
 }

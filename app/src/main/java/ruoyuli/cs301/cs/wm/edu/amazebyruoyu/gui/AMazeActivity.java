@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.view.View;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -106,6 +107,8 @@ public class AMazeActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.v(LOG_V, "Generation Algorithm Selected: " + gen_spinner.getSelectedItem().toString());
+                Toast.makeText(getApplicationContext(),"Generation Algorithm Selected: " + gen_spinner.getSelectedItem().toString()
+                        , Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -116,6 +119,9 @@ public class AMazeActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.v(LOG_V, "Driver Algorithm Selected: " + driver_spinner.getSelectedItem().toString());
+                Toast.makeText(getApplicationContext(),
+                        "Driver Algorithm Selected: " + driver_spinner.getSelectedItem().toString(),
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -126,6 +132,9 @@ public class AMazeActivity extends AppCompatActivity {
 
     public void generateNewMaze(View view) {
         Log.v(LOG_V, "New Maze Button Clicked");
+        Toast.makeText(getApplicationContext(),
+                "New Maze Button Clicked",
+                Toast.LENGTH_SHORT).show();
 
         int skillLevel = seekBar.getProgress();
         String genAlgorithm = gen_spinner.getSelectedItem().toString();
@@ -152,6 +161,9 @@ public class AMazeActivity extends AppCompatActivity {
         String drvAlgorithm = driver_spinner.getSelectedItem().toString();
         Log.v(LOG_V, "Old Maze Button Clicked: skillLevel: "+skillLevel+" generating algorithm: "
         +genAlgorithm);
+        Toast.makeText(getApplicationContext(),
+                "Old Maze Button Clicked",
+                Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, GeneratingActivity.class);
         intent.putExtra("newMaze", false);
         intent.putExtra("skillLevel", skillLevel);

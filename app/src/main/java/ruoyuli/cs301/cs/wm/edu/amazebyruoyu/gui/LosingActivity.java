@@ -1,12 +1,14 @@
 package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
@@ -18,6 +20,7 @@ public class LosingActivity extends AppCompatActivity {
     TextView losing4;
     TextView losing5;
     Button back;
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
     private String drvalgo;
     private int shortestPath;
@@ -30,6 +33,9 @@ public class LosingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.losing_activity);
         setUpVariables();
+        mediaPlayer = MediaPlayer.create(this, R.raw.losing_music);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
         Intent preIntent = getIntent();
         drvalgo = preIntent.getStringExtra("drvalgo");
         shortestPath = preIntent.getIntExtra("shortestPath", 0);
@@ -50,6 +56,8 @@ public class LosingActivity extends AppCompatActivity {
 
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
+        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        mediaPlayer.stop();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -59,5 +67,19 @@ public class LosingActivity extends AppCompatActivity {
         losing2.setText("The Possible Shortest Path: " + Integer.toString(shortestPath));
         losing3.setText("Total path length: " + Integer.toString(userPath));
         losing4.setText("Energy Consumption: " + Integer.toString(energyConsump));
+    }
+
+    @Override
+    public void onResume() {
+        mediaPlayer.start();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
     }
 }

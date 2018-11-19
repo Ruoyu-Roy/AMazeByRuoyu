@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
@@ -94,6 +95,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
+        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
