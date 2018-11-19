@@ -15,8 +15,15 @@ import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
-public class PlayAnimationActivity extends AppCompatActivity {
+/**
+ * Play Animation Activity is the implementation java file for animation_activity xml file.
+ * It takes care of the functionality of all elements in the play animation screen
+ *
+ * @author ruoyuli
+ */
 
+public class PlayAnimationActivity extends AppCompatActivity {
+    //Basic Variables
     ToggleButton wall;
     ToggleButton map;
     ToggleButton clue;
@@ -38,6 +45,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private String driver;
     final private int TOTAL_ENERGY = 3000;
 
+    /*
+    Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
+    of this whole class. Everything we do or want to run is in this class.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +62,10 @@ public class PlayAnimationActivity extends AppCompatActivity {
         setToggleButtons();
     }
 
+    /*
+    Set up basic variables(Gui elements), connecting them with the responding parts in the responding
+    xml file.
+     */
     private void setUpVariables(){
         go2win = (Button) findViewById(R.id.go2win);
         go2lose = (Button) findViewById(R.id.go2lose);
@@ -65,6 +80,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
         size_down = (ImageButton) findViewById(R.id.size_down_map);
     }
 
+    /*
+    Enable user to go to winning screen by clicking go2Winning button.
+     */
     public void toWin(View view){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
         Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
@@ -77,6 +95,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Enable user to go to losing screen by clicking go2losing button.
+     */
     public void toLose(View view){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
         Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
@@ -90,11 +111,17 @@ public class PlayAnimationActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Set the size_up and size_down button invisible. They will be visible if map button is checked.
+     */
     public void setButtons(){
         size_up.setVisibility(View.INVISIBLE);
         size_down.setVisibility(View.INVISIBLE);
     }
 
+    /*
+    This method enables user to get back to the menu screen by clicking the "back" button.
+     */
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
@@ -103,10 +130,17 @@ public class PlayAnimationActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Update the battery bar based on the info given.
+     */
     private void updateBatteryBar(){
         energybar.setProgress(energyReserve);
     }
 
+    /*
+    Set up the functionality of all the toggle button. Specifically, what will happen if the toggle
+    is checked and what will happen if the toggle is unchecked.
+     */
     public void setToggleButtons(){
         wall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -168,11 +202,17 @@ public class PlayAnimationActivity extends AppCompatActivity {
         });
     }
 
+    /*
+    Enable user to increment or decrement the size of the toggle map.
+     */
     public void sizeUp(View view){
         Log.v(LOG_V, "Increment map size.");
         Toast.makeText(getApplicationContext(), "Map Inre", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    Enable user to increment or decrement the size of the toggle map.
+     */
     public void sizeDown(View view){
         Log.v(LOG_V, "Decrement map size.");
 

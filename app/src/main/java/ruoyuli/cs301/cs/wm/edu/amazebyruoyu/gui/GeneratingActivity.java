@@ -15,6 +15,13 @@ import android.widget.Toast;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
+/**
+ * Generating Activity is the implementation java file for generating_activity xml file.
+ * It takes care of the functionality of all elements in the generating screen
+ *
+ * @author ruoyuli
+ */
+
 public class GeneratingActivity extends AppCompatActivity {
     // Basic variables
     private TextView catch_me;
@@ -32,6 +39,10 @@ public class GeneratingActivity extends AppCompatActivity {
     private int progress = 0;
     private MyTask task = new MyTask();
 
+    /*
+    Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
+    of this whole class. Everything we do or want to run is in this class.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +68,10 @@ public class GeneratingActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    Set up basic variables(Gui elements), connecting them with the responding parts in the responding
+    xml file.
+     */
     private void setUpVariables() {
         catch_me = (TextView) findViewById(R.id.catch_me);
         game_rule = (TextView) findViewById(R.id.game_rule);
@@ -65,12 +80,18 @@ public class GeneratingActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
+    /*
+    Log info when the newMaze generating is done.
+     */
     public void newMaze(){
         Log.v(LOG_V, "Generating new maze (skill level: "+Integer.toString(skillLevel)+"; generating algorithm: "
         + generateAlgorithm + "; driver algorith: " + driverAlgorithm);
 
     }
 
+    /*
+    Create a background thread by AsyncTask to mimic the generating process
+     */
     class MyTask extends AsyncTask<Void, Integer, Void> {
             @Override
             public Void doInBackground(Void... params) {
@@ -108,6 +129,7 @@ public class GeneratingActivity extends AppCompatActivity {
                 super.onPostExecute(result);
                 progressBar.setProgress(100);
                 loading.setText("Murder Happens!");
+                newMaze();
                 Toast.makeText(getApplicationContext(), "Maze ready", Toast.LENGTH_SHORT).show();
                 System.out.println(driverAlgorithm);
                 switchToPlay();
@@ -120,7 +142,9 @@ public class GeneratingActivity extends AppCompatActivity {
 
         }
 
-
+    /*
+    This method enables user to get back to the menu screen by clicking the "back" button.
+     */
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
@@ -131,6 +155,9 @@ public class GeneratingActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Enable the app automatically goes to play screen when the generating process reaches 100%
+     */
     public void switchToPlay(){
         if (driverAlgorithm.equals("Manual")) {
             Log.v(LOG_V, "Manual Driver implemented. User will control the robot");
@@ -150,12 +177,18 @@ public class GeneratingActivity extends AppCompatActivity {
 
     }
 
+    /*
+    Resume the music when the app is visible.
+     */
     @Override
     public void onResume() {
         mediaPlayer.start();
         super.onResume();
     }
 
+    /*
+    Stop the music when app is invisible.
+     */
     @Override
     public void onPause() {
         super.onPause();

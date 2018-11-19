@@ -14,6 +14,13 @@ import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
+/**
+ * Play Manually Activity is the implementation java file for manually_activity xml file.
+ * It takes care of the functionality of all elements in the play manually screen
+ *
+ * @author ruoyuli
+ */
+
 public class PlayManuallyActivity extends AppCompatActivity {
     //Basic variables
     Button go2win;
@@ -29,6 +36,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int userPath = 300;
     private String LOG_V = "PlayManuallyActivity";
 
+    /*
+    Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
+    of this whole class. Everything we do or want to run is in this class.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +49,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
         setButtons();
     }
 
+    /*
+    Set up basic variables(Gui elements), connecting them with the responding parts in the responding
+    xml file.
+     */
     private void setUpVariables(){
         go2win = (Button) findViewById(R.id.go2win);
         up = (ImageButton) findViewById(R.id.upbutton);
@@ -50,6 +65,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         size_down = (ImageButton) findViewById(R.id.size_down_map);
     }
 
+    /*
+    Enable user to go to winning screen by clicking go2Winning button.
+     */
     public void toWin(View view){
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
         Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
@@ -61,37 +79,58 @@ public class PlayManuallyActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Set the size_up and size_down button invisible. They will be visible if map button is checked.
+     */
     public void setButtons(){
         size_up.setVisibility(View.INVISIBLE);
         size_down.setVisibility(View.INVISIBLE);
     }
 
+    /*
+    Enable user to move the robot by clicking responding direction button.
+     */
     public void moveUp(View view){
         Log.v(LOG_V, "MOVE_UP button clicked. User moves forward one step.");
         Toast.makeText(getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
         userPath++;
     }
 
+    /*
+    Enable user to move the robot by clicking responding direction button.
+     */
     public void moveRight(View view){
         Log.v(LOG_V, "MOVE_RIGHT button clicked. User turns right.");
         Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    Enable user to move the robot by clicking responding direction button.
+     */
     public void moveLeft(View view){
         Log.v(LOG_V, "MOVE_LEFT button clicked. User turns left.");
         Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    Enable user to increment or decrement the size of the toggle map.
+     */
     public void sizeUp(View view){
         Log.v(LOG_V, "Increment map size.");
         Toast.makeText(getApplicationContext(), "Map Incre", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    Enable user to increment or decrement the size of the toggle map.
+     */
     public void sizeDown(View view){
         Log.v(LOG_V, "Decrement map size.");
         Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
     }
 
+    /*
+    This method enables user to get back to the menu screen by clicking the "back" button.
+     */
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
@@ -100,6 +139,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Set up the functionality of all the toggle button. Specifically, what will happen if the toggle
+    is checked and what will happen if the toggle is unchecked.
+     */
     public void setToggleButtons(){
         wall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

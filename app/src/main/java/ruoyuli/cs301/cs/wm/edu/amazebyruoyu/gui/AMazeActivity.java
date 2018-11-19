@@ -22,11 +22,14 @@ import java.util.*;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
 /**
+ * A Maze Activity is the implementation java file for maze_activity xml file.
+ * It takes care of the functionality of all elements in the menu screen
+ *
  * @author ruoyuli
  */
 
 public class AMazeActivity extends AppCompatActivity {
-
+    //Basic Variables
     private SeekBar seekBar;
     private TextView difLevel;
     private Spinner gen_spinner;
@@ -44,7 +47,10 @@ public class AMazeActivity extends AppCompatActivity {
     protected String LOG_V = "AMazeActivity";
     private boolean manual = false;
 
-
+    /*
+    Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
+    of this whole class. Everything we do or want to run is in this class.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +64,10 @@ public class AMazeActivity extends AppCompatActivity {
         mediaPlayer.start();
     }
 
+    /*
+    Set up basic variables(Gui elements), connecting them with the responding parts in the responding
+    xml file.
+     */
     public void initializeVariable() {
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
         difLevel = (TextView) findViewById(R.id.difLevel);
@@ -65,6 +75,9 @@ public class AMazeActivity extends AppCompatActivity {
         driver_spinner = (Spinner) findViewById(R.id.drv_spinner);
     }
 
+    /*
+    Takes care of the functionality of the seek bar of skill level.
+     */
     public void setOnSeekBarListener() {
         seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
@@ -84,6 +97,9 @@ public class AMazeActivity extends AppCompatActivity {
         });
     }
 
+    /*
+    Set up the choices in each spinner.
+     */
     private void spinnerSet() {
         List<String> gen_algo = new ArrayList<String>();
         gen_algo.add(DFS);
@@ -103,6 +119,10 @@ public class AMazeActivity extends AppCompatActivity {
         driver_spinner.setAdapter(adapter1);
     }
 
+    /*
+    Takes care of the functionality of all spinner, like activity of the app when certain element is
+    chosen.
+     */
     private void addOnSpinnerListener() {
         gen_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -131,6 +151,9 @@ public class AMazeActivity extends AppCompatActivity {
         });
     }
 
+    /*
+    Generating the new maze when user clicks the "New Maze" Button.
+     */
     public void generateNewMaze(View view) {
         Log.v(LOG_V, "New Maze Button Clicked");
         Toast.makeText(getApplicationContext(),
@@ -156,6 +179,9 @@ public class AMazeActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Load the former maze when user clicks the "Load Maze" button.
+     */
     public void loadOldMaze(View view) {
         int skillLevel = seekBar.getProgress();
         String genAlgorithm = gen_spinner.getSelectedItem().toString();
@@ -176,12 +202,18 @@ public class AMazeActivity extends AppCompatActivity {
         finish();
     }
 
+    /*
+    Resume the music when the app is visible.
+     */
     @Override
     public void onResume() {
         mediaPlayer.start();
         super.onResume();
     }
 
+    /*
+    Stop the music when app is invisible.
+     */
     @Override
 	public void onPause() {
 		super.onPause();
