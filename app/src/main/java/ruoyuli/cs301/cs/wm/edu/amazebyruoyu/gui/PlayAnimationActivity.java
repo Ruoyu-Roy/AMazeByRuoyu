@@ -67,6 +67,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     public void toWin(View view){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
+        Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("energy_consumption", TOTAL_ENERGY-energyReserve);
         intent.putExtra("drvalgo", driver);
@@ -78,6 +79,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
 
     public void toLose(View view){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
+        Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LosingActivity.class);
         intent.putExtra("energy_consumption", TOTAL_ENERGY-energyReserve);
         intent.putExtra("drvalgo", driver);
@@ -122,6 +124,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
                     size_down.setVisibility(View.VISIBLE);
                 }
@@ -147,10 +150,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     Log.v(LOG_V,"Pause button clicked. Pause the game.");
+                    Toast.makeText(getApplicationContext(), "Game Paused", Toast.LENGTH_SHORT).show();
                     gameStop = true;
                 }
                 else{
                     Log.v(LOG_V, "Start button clicked. Start the game.");
+                    Toast.makeText(getApplicationContext(), "Game Start", Toast.LENGTH_SHORT).show();
                     gameStop = false;
                 }
             }

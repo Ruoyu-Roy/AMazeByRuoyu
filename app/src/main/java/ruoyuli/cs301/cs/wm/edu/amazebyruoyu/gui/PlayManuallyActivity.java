@@ -52,6 +52,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
 
     public void toWin(View view){
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
+        Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("drvalgo", "Manual");
         intent.putExtra("shortestPath", shortestPath);
@@ -111,6 +112,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
                     size_down.setVisibility(View.VISIBLE);
                 }

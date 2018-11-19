@@ -58,9 +58,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="251dp"
         android:layout_marginTop="0dp"
-        android:text="@string/wall_off"
-        android:textOff="@string/wall_off"
-        android:textOn="@string/wall_on" />
+        android:text="@string/clue_off"
+        android:textOff="@string/clue_off"
+        android:textOn="@string/clue_on" />
 
     <ToggleButton
         android:id="@+id/mapbuttonM"
