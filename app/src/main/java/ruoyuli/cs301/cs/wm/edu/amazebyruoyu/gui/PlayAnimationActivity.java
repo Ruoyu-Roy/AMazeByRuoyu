@@ -67,8 +67,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
     xml file.
      */
     private void setUpVariables(){
-        go2win = (Button) findViewById(R.id.go2win);
-        go2lose = (Button) findViewById(R.id.go2lose);
         back = (Button) findViewById(R.id.backP);
         energy = (TextView) findViewById(R.id.energy);
         energybar = (ProgressBar) findViewById(R.id.progressBar2);

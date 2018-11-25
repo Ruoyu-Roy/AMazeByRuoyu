@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".gui.PlayManuallyActivity">
 
-    <Button
+    <!--<Button
         android:id="@+id/go2win"
         android:layout_width="290dp"
         android:layout_height="309dp"
@@ -18,14 +18,15 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:onClick="toWin"
-        android:text="@string/Go2win" />
+        android:text="@string/Go2win" />-->
 
     <ImageButton
         android:id="@+id/upbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/go2win"
+        android:layout_above="@+id/backM"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-11dp"
         android:contentDescription="@string/up"
         android:onClick="moveUp"
         app:srcCompat="@drawable/up_arrow" />
@@ -34,7 +35,8 @@
         android:id="@+id/leftbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/upbutton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
         android:layout_toStartOf="@+id/upbutton"
         android:contentDescription="@string/left"
         android:onClick="moveLeft"
@@ -44,7 +46,8 @@
         android:id="@+id/rightbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/upbutton"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
         android:layout_toEndOf="@+id/upbutton"
         android:contentDescription="@string/right"
         android:onClick="moveRight"
@@ -76,8 +79,10 @@
         android:id="@+id/wallbuttonM"
         android:layout_width="71dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/go2win"
         android:layout_alignTop="@+id/cluebuttonM"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="0dp"
         android:text="@string/wall_off"
         android:textOff="@string/wall_off"
         android:textOn="@string/wall_on" />
@@ -114,5 +119,12 @@
         android:layout_alignParentBottom="true"
         android:onClick="backButtonClicked"
         android:text="@string/back" />
+
+    <ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazePanel
+        android:id="@+id/mazePanel"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_alignBottom="@+id/size_down_map"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

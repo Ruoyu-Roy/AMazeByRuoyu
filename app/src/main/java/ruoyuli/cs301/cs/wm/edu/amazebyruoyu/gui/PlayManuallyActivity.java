@@ -54,7 +54,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
     xml file.
      */
     private void setUpVariables(){
-        go2win = (Button) findViewById(R.id.go2win);
         up = (ImageButton) findViewById(R.id.upbutton);
         left = (ImageButton) findViewById(R.id.leftbutton);
         right = (ImageButton) findViewById(R.id.rightbutton);
