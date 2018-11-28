@@ -81,7 +81,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     /*
     Enable user to go to winning screen by clicking go2Winning button.
      */
-    public void toWin(View view){
+    public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
         Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
@@ -96,7 +96,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     /*
     Enable user to go to losing screen by clicking go2losing button.
      */
-    public void toLose(View view){
+    public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
         Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LosingActivity.class);

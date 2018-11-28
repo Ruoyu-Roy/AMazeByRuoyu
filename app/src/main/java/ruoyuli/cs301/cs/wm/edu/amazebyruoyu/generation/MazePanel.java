@@ -28,11 +28,11 @@ public class MazePanel extends View {
     }
 
     public void update(Canvas canvas) {
-        draw(canvas);
+        invalidate();
     }
 
     public void update() {
-        draw(canvas);
+        invalidate();
     }
 
     public Canvas getCanvas() {
@@ -143,6 +143,12 @@ public class MazePanel extends View {
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
+        //testMyDrawing();
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        //invalidate();
+    }
+
+    private void testMyDrawing() {
         setColor("red");
         fillOval(0, 0, 100, 100);
         setColor("green");
@@ -153,7 +159,5 @@ public class MazePanel extends View {
         int [] x = {50, 100, 150, 100, 50, 0};
         int [] y = {100, 100, 150, 200, 200, 150};
         fillPolygon(x, y ,6);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        invalidate();
     }
 }

@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.*;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.*;
 
 /**
  * A Maze Activity is the implementation java file for maze_activity xml file.
@@ -37,8 +38,8 @@ public class AMazeActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
 
     protected String DFS = "DFS",
-            Prim = "Prim's",
-            Eller = "Eller's",
+            Prim = "Prim",
+            Eller = "Eller",
             Manual = "Manual",
             WallF = "WallFollower",
             Wiz = "Wizard",

@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.*;
 
 /**
  * Generating Activity is the implementation java file for generating_activity xml file.
@@ -22,7 +23,7 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
  * @author ruoyuli
  */
 
-public class GeneratingActivity extends AppCompatActivity {
+public class GeneratingActivity extends AppCompatActivity implements Order{
     // Basic variables
     private TextView catch_me;
     private TextView game_rule;
@@ -33,11 +34,14 @@ public class GeneratingActivity extends AppCompatActivity {
     private int skillLevel;
     private String generateAlgorithm;
     private String driverAlgorithm;
-    private Handler handler;
     private MediaPlayer mediaPlayer;
     private String LOG_V = "Generating Activity: ";
     private int progress = 0;
-    private MyTask task = new MyTask();
+    //private MyTask task = new MyTask();
+    private Builder builder; // selected maze generation algorithm
+    private boolean perfect = false;
+    private Handler handler = new Handler();
+    private MazeFactory mazeFactory = new MazeFactory();
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -50,21 +54,22 @@ public class GeneratingActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.loading_music);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-        task.resetTask();
+        //task.resetTask();
         Intent previousIntent = getIntent();
         newMaze = previousIntent.getBooleanExtra("newMaze", true);
-        generateAlgorithm = previousIntent.getStringExtra("generationAlgorithm");
+        generateAlgorithm = previousIntent.getStringExtra("generateAlgorithm");
         driverAlgorithm = previousIntent.getStringExtra("driverAlgorithm");
+        skillLevel = previousIntent.getIntExtra("skillLevel", 0);
+        DataHolder.skillLevel = this.skillLevel;
         if (newMaze) {
-            skillLevel = previousIntent.getIntExtra("skillLevel", 0);
+            setBuilder();
             setUpVariables();
-            System.out.println(driverAlgorithm);
-            task.execute();
+            buildNew();
+            //task.execute();
 
         } else {
-            skillLevel = previousIntent.getIntExtra("skillLevel", 0);
             setUpVariables();
-            task.execute();
+            //task.execute();
         }
     }
 
@@ -89,9 +94,60 @@ public class GeneratingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public int getSkillLevel() {
+        return skillLevel;
+    }
+
+    @Override
+    public Builder getBuilder() {
+        return builder;
+    }
+
+    @Override
+    public boolean isPerfect() {
+        return false;
+    }
+
+    public void setBuilder() {
+        if (generateAlgorithm.equalsIgnoreCase("DFS"))
+            builder = Builder.DFS;
+        else if (generateAlgorithm.equalsIgnoreCase("Prim"))
+            builder = Builder.Prim;
+        else if (generateAlgorithm.equalsIgnoreCase("Eller"))
+            builder = Builder.Eller;
+        DataHolder.builder = this.builder;
+    }
+
+    @Override
+    public void deliver(MazeConfiguration mazeConfig) {
+        DataHolder.mazeConfiguration = mazeConfig;
+        switchToPlay();
+    }
+
+    @Override
+    public void updateProgress(int percentage) {
+        if (this.progress < percentage && percentage <= 100) {
+            this.progress = percentage;
+            this.handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setProgress(progress);
+                    loading.setText("Loading: " + progress + "%");
+                    Log.v(LOG_V, "Progress: " + progress);
+                }
+            });
+        }
+    }
+
+    public void buildNew() {
+        mazeFactory.order(this);
+    }
+
     /*
     Create a background thread by AsyncTask to mimic the generating process
      */
+    /*
     class MyTask extends AsyncTask<Void, Integer, Void> {
             @Override
             public Void doInBackground(Void... params) {
@@ -141,6 +197,7 @@ public class GeneratingActivity extends AppCompatActivity {
             }
 
         }
+        */
 
     /*
     This method enables user to get back to the menu screen by clicking the "back" button.
@@ -148,7 +205,7 @@ public class GeneratingActivity extends AppCompatActivity {
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
-        task.resetTask();
+        //task.resetTask();
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);

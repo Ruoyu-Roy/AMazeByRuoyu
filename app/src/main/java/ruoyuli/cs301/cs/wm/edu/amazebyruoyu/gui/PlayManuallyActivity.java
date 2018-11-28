@@ -67,7 +67,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     /*
     Enable user to go to winning screen by clicking go2Winning button.
      */
-    public void toWin(View view){
+    public void toWin(){
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
         Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
