@@ -206,7 +206,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
         //task.resetTask();
-        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();

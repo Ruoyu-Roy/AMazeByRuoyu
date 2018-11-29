@@ -81,7 +81,6 @@ public class StatePlaying extends DefaultState {
      * If the panel is null, all drawing operations are skipped.
      * This mode of operation is useful for testing purposes, 
      * i.e., a dryrun of the game without the graphics part.
-     * @param controller provides access to the controller this state resides in
      * @param panel is part of the UI and visible on the screen, needed for drawing
      */
     public void start(MazePanel panel) {
@@ -130,7 +129,7 @@ public class StatePlaying extends DefaultState {
 		firstPersonView = new FirstPersonDrawer(Constants.VIEW_WIDTH,
 				Constants.VIEW_HEIGHT, Constants.MAP_UNIT,
 				Constants.STEP_SIZE, seenCells, mazeConfig.getRootnode()) ;
-		mapView = new MapDrawer(seenCells, 15, mazeConfig) ;
+		mapView = new MapDrawer(seenCells, 85, mazeConfig) ;
 		// draw the initial screen for this state
 		draw();
 	}
@@ -156,7 +155,7 @@ public class StatePlaying extends DefaultState {
     /**
      * Method incorporates all reactions to keyboard input in original code, 
      * The simple key listener calls this method to communicate input.
-     * Method requires {@link #start(Controller, MazePanel) start} to be
+     * Method requires to be
      * called before.
      * @param key provides the feature the user selected
      * @param value is not used, exists only for consistency across State classes
@@ -165,7 +164,6 @@ public class StatePlaying extends DefaultState {
     public boolean keyDown(UserInput key, int value, boolean manual) {
         if (!started)
             return false;
-
         // react to input for directions and interrupt signal (ESCAPE key)  
         // react to input for displaying a map of the current path or of the overall maze (on/off toggle switch)
         // react to input to display solution (on/off toggle switch)
@@ -178,6 +176,7 @@ public class StatePlaying extends DefaultState {
         		walk(1);
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
+                playManuallyActivity.increasePath();
                 toEnd(true, manual);
             }
             else if (isRobotStopped()){
@@ -185,18 +184,12 @@ public class StatePlaying extends DefaultState {
             }
             break;
         case Left: // turn left
-        	System.out.println(this.getCurrentPosition()[0]);
-        	System.out.println(this.getCurrentPosition()[1]);
-        	System.out.println(this.getCurrentDirection());
         	if (!isRobotStopped())
         		rotate(1);
             if (isRobotStopped())
                 toEnd(false, manual);
             break;
         case Right: // turn right
-        	System.out.println(this.getCurrentPosition()[0]);
-        	System.out.println(this.getCurrentPosition()[1]);
-        	System.out.println(this.getCurrentDirection());
         	if (!isRobotStopped())
         		rotate(-1);
             if (isRobotStopped())

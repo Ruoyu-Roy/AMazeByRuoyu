@@ -22,7 +22,7 @@ public class MazePanel extends View {
 
     public MazePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
-        bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(1280, 1280, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
         paint = new Paint();
     }

@@ -3,6 +3,7 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.*;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Constants.UserInput;
 
 /**
  * Play Manually Activity is the implementation java file for manually_activity xml file.
@@ -23,7 +26,7 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 
 public class PlayManuallyActivity extends AppCompatActivity {
     //Basic variables
-    Button go2win;
+    //Button go2win;
     ImageButton up;
     ImageButton left;
     ImageButton right;
@@ -32,9 +35,14 @@ public class PlayManuallyActivity extends AppCompatActivity {
     ToggleButton clue;
     ImageButton size_up;
     ImageButton size_down;
-    private int shortestPath = 30;
-    private int userPath = 300;
+    private int shortestPath;
+    private int userPath = 0;
     private String LOG_V = "PlayManuallyActivity";
+    private MazeConfiguration mazeConfiguration;
+    private MazePanel mazePanel;
+    private StatePlaying statePlaying;
+    private Robot robot;
+    private RobotDriver driver;
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -47,13 +55,25 @@ public class PlayManuallyActivity extends AppCompatActivity {
         setUpVariables();
         setToggleButtons();
         setButtons();
+        mazeConfiguration = DataHolder.mazeConfiguration;
+        robot = new BasicRobot();
+        driver = new ManualDriver();
+        statePlaying = new StatePlaying();
+        statePlaying.setActivity(this);
+        robot.setMaze(statePlaying);
+        driver.setRobot(robot);
+        statePlaying.setRobotAndDriver(robot, driver);
+        statePlaying.setMazeConfiguration(mazeConfiguration);
+        shortestPath = mazeConfiguration.getDistanceToExit(mazeConfiguration.getStartingPosition()[0],
+                mazeConfiguration.getStartingPosition()[1]);
+        statePlaying.start(mazePanel);
     }
 
     /*
     Set up basic variables(Gui elements), connecting them with the responding parts in the responding
     xml file.
      */
-    private void setUpVariables(){
+    private void setUpVariables() {
         up = (ImageButton) findViewById(R.id.upbutton);
         left = (ImageButton) findViewById(R.id.leftbutton);
         right = (ImageButton) findViewById(R.id.rightbutton);
@@ -62,14 +82,27 @@ public class PlayManuallyActivity extends AppCompatActivity {
         clue = (ToggleButton) findViewById(R.id.cluebuttonM);
         size_up = (ImageButton) findViewById(R.id.size_up_map);
         size_down = (ImageButton) findViewById(R.id.size_down_map);
+        mazePanel = (MazePanel) findViewById(R.id.mazePanel);
+    }
+
+    private void disableButtons() {
+        up.setEnabled(false);
+        left.setEnabled(false);
+        right.setEnabled(false);
+        wall.setEnabled(false);
+        map.setEnabled(false);
+        clue.setEnabled(false);
+        size_up.setEnabled(false);
+        size_down.setEnabled(false);
     }
 
     /*
     Enable user to go to winning screen by clicking go2Winning button.
      */
-    public void toWin(){
+    public void toWin() {
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
-        Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
+        disableButtons();
+        //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("drvalgo", "Manual");
         intent.putExtra("shortestPath", shortestPath);
@@ -81,50 +114,59 @@ public class PlayManuallyActivity extends AppCompatActivity {
     /*
     Set the size_up and size_down button invisible. They will be visible if map button is checked.
      */
-    public void setButtons(){
+    public void setButtons() {
         size_up.setVisibility(View.INVISIBLE);
         size_down.setVisibility(View.INVISIBLE);
     }
 
-    /*
-    Enable user to move the robot by clicking responding direction button.
-     */
-    public void moveUp(View view){
-        Log.v(LOG_V, "MOVE_UP button clicked. User moves forward one step.");
-        Toast.makeText(getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
+    public void increasePath() {
         userPath++;
     }
 
     /*
     Enable user to move the robot by clicking responding direction button.
      */
-    public void moveRight(View view){
-        Log.v(LOG_V, "MOVE_RIGHT button clicked. User turns right.");
-        Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
+    public void moveUp(View view) {
+        Log.v(LOG_V, "MOVE_UP button clicked. User moves forward one step.");
+        ((ManualDriver) driver).move();
+        //Toast.makeText(getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
+        userPath = robot.getOdometerReading();
     }
 
     /*
     Enable user to move the robot by clicking responding direction button.
      */
-    public void moveLeft(View view){
+    public void moveRight(View view) {
+        Log.v(LOG_V, "MOVE_RIGHT button clicked. User turns right.");
+        ((ManualDriver) driver).rotate(Robot.Turn.RIGHT);
+        //Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+    Enable user to move the robot by clicking responding direction button.
+     */
+    public void moveLeft(View view) {
         Log.v(LOG_V, "MOVE_LEFT button clicked. User turns left.");
-        Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
+        ((ManualDriver) driver).rotate(Robot.Turn.LEFT);
+        //Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
     }
 
     /*
     Enable user to increment or decrement the size of the toggle map.
      */
-    public void sizeUp(View view){
+    public void sizeUp(View view) {
         Log.v(LOG_V, "Increment map size.");
-        Toast.makeText(getApplicationContext(), "Map Incre", Toast.LENGTH_SHORT).show();
+        statePlaying.keyDown(UserInput.ZoomIn, 0, false);
+        //Toast.makeText(getApplicationContext(), "Map Incre", Toast.LENGTH_SHORT).show();
     }
 
     /*
     Enable user to increment or decrement the size of the toggle map.
      */
-    public void sizeDown(View view){
+    public void sizeDown(View view) {
         Log.v(LOG_V, "Decrement map size.");
-        Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
+        statePlaying.keyDown(UserInput.ZoomOut, 0, false);
+        //Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
     }
 
     /*
@@ -132,7 +174,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
-        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -142,17 +184,18 @@ public class PlayManuallyActivity extends AppCompatActivity {
     Set up the functionality of all the toggle button. Specifically, what will happen if the toggle
     is checked and what will happen if the toggle is unchecked.
      */
-    public void setToggleButtons(){
+    public void setToggleButtons() {
         wall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Wall_Button clicked. Show the currently visible walls");
-                    Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                   Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
-                    Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -161,13 +204,14 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
-                    Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
                     size_down.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
-                    Toast.makeText(getApplicationContext(), "Size Button hiden", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Size Button hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
             }
@@ -177,11 +221,12 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Clue_Buttons clicked. Show the solution.");
-                    Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                    statePlaying.keyDown(UserInput.ToggleSolution, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
+                } else {
                     Log.v(LOG_V, "Clue_Button unclicked. Hide the solution");
-                    Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(UserInput.ToggleSolution, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });

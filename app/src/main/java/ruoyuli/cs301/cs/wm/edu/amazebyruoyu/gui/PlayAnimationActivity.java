@@ -14,6 +14,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazeConfiguration;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazePanel;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.RobotDriver;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.StatePlaying;
 
 /**
  * Play Animation Activity is the implementation java file for animation_activity xml file.
@@ -36,14 +41,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
     ProgressBar energybar;
     Button back;
 
-    private int energyReserve = 2500;
-    private int shortestPath = 30;
-    private int pathLength = 300;
+    private int energyReserve = 3000;
+    private int shortestPath;
+    private int pathLength;
     private String LOG_V = "PlayAnimationActivity";
     private boolean stopped = true;
     private boolean gameStop = false;
     private String driver;
     final private int TOTAL_ENERGY = 3000;
+
+    private MazeConfiguration mazeConfiguration;
+    private MazePanel mazePanel;
+    private StatePlaying statePlaying;
+    private Robot robot;
+    private RobotDriver rdriver;
+
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -131,7 +143,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     /*
     Update the battery bar based on the info given.
      */
-    private void updateBatteryBar(){
+    public void updateBatteryBar(){
         energybar.setProgress(energyReserve);
     }
 
