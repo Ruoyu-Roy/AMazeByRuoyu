@@ -14,11 +14,18 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.BasicRobot;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.DataHolder;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Explorer;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.ManualDriver;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazeConfiguration;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazePanel;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Pledge;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.RobotDriver;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.StatePlaying;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.WallFollower;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Wizard;
 
 /**
  * Play Animation Activity is the implementation java file for animation_activity xml file.
@@ -72,6 +79,17 @@ public class PlayAnimationActivity extends AppCompatActivity {
         energybar.setProgress(3000);
         setButtons();
         setToggleButtons();
+        mazeConfiguration = DataHolder.mazeConfiguration;
+        robot = new BasicRobot();
+        setUpDriver();
+        statePlaying = new StatePlaying();
+        statePlaying.setActivity(this);
+        robot.setMaze(statePlaying);
+        rdriver.setRobot(robot);
+        statePlaying.setRobotAndDriver(robot, rdriver);
+        statePlaying.setMazeConfiguration(mazeConfiguration);
+        shortestPath = mazeConfiguration.getDistanceToExit(mazeConfiguration.getStartingPosition()[0],
+                mazeConfiguration.getStartingPosition()[1]);
     }
 
     /*
@@ -88,6 +106,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
         pause = (ToggleButton) findViewById(R.id.pausetoggle);
         size_up = (ImageButton) findViewById(R.id.size_up_map);
         size_down = (ImageButton) findViewById(R.id.size_down_map);
+    }
+
+    private void setUpDriver() {
+        if (driver.equalsIgnoreCase("WallFollower")) {
+            rdriver = new WallFollower();
+        }
+        else if (driver.equalsIgnoreCase("Wizard")) {
+            rdriver = new Wizard();
+        }
+        else if (driver.equalsIgnoreCase("Explorer")) {
+            rdriver = new Explorer();
+        }
+        else if (driver.equalsIgnoreCase("Pledge")) {
+            rdriver = new Pledge();
+        }
     }
 
     /*
