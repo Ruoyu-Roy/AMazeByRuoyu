@@ -2,6 +2,8 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 //import generation.Distance;
 
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui.PlayAnimationActivity;
+
 /**
  * This interface specifies a robot driver that operates a robot to escape from a given maze. 
  * 
@@ -58,5 +60,7 @@ public interface RobotDriver {
 	 * This is used as a measure of efficiency for a robot driver.
 	 */
 	int getPathLength() ;
+
+	void setAnimation(PlayAnimationActivity animation);
 	
 }

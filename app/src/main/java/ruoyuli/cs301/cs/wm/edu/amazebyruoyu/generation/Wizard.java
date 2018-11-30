@@ -2,6 +2,8 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 //import generation.CardinalDirection;
 //import generation.MazeConfiguration;
+
+import android.os.Handler;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Direction;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
 
@@ -25,10 +27,10 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
 public class Wizard extends ManualDriver implements RobotDriver{
 	//Basic variables
 	protected MazeConfiguration mazeConfig;
-	
+	private Handler handler;
 	//Constructor
 	public Wizard() {
-		
+	    handler = new Handler();
 	}
 
 	/**
@@ -39,27 +41,30 @@ public class Wizard extends ManualDriver implements RobotDriver{
 	@Override
 	public boolean drive2Exit() throws Exception {
 		// TODO Auto-generated method stub
-		while (!robot.isAtExit()) {
+		if (!robot.isAtExit()) {
 			checkStop();
 			CardinalDirection direction = robot.getCurrentDirection();
 			if (direction != findNext()) {
 				findMove();
 			}
-			checkStop();
-			robot.move(1, false);
+			else {
+				checkStop();
+				move(1, false);
+			}
 		}
-		checkStop();
-		if (robot.canSeeExit(Direction.LEFT)) {
+		else if (robot.canSeeExit(Direction.LEFT)) {
 			checkStop();
-			robot.rotate(Turn.LEFT,false);
+			rotate(Turn.LEFT,false);
 		}
 		else if (robot.canSeeExit(Direction.RIGHT)) {
 			checkStop();
-			robot.rotate(Turn.RIGHT,false);
+			rotate(Turn.RIGHT,false);
 		}
-		checkStop();
-		this.robot.move(1, false);
-		checkStop();
+		else if (robot.isAtExit()) {
+			checkStop();
+			move(1, false);
+			checkStop();
+		}
 		return true;
 	}
 	
@@ -103,46 +108,46 @@ public class Wizard extends ManualDriver implements RobotDriver{
 	public void findMove() throws Exception {
 		if (robot.getCurrentDirection() == CardinalDirection.East) {
 			if (findNext() == CardinalDirection.North) {
-				robot.rotate(Turn.RIGHT,false);
+				rotate(Turn.RIGHT,false);
 			}
 			else if (findNext() == CardinalDirection.South) {
-				robot.rotate(Turn.LEFT,false);
+				rotate(Turn.LEFT,false);
 			}
 			else if (findNext() == CardinalDirection.West) {
-				robot.rotate(Turn.AROUND,false);
+				rotate(Turn.AROUND,false);
 			}
 		}
 		else if (robot.getCurrentDirection() == CardinalDirection.West) {
 			if (findNext() == CardinalDirection.North) {
-				robot.rotate(Turn.LEFT,false);
+				rotate(Turn.LEFT,false);
 			}
 			else if (findNext() == CardinalDirection.South) {
-				robot.rotate(Turn.RIGHT,false);
+				rotate(Turn.RIGHT,false);
 			}
 			else if (findNext() == CardinalDirection.East) {
-				robot.rotate(Turn.AROUND,false);
+				rotate(Turn.AROUND,false);
 			}
 		}
 		else if (robot.getCurrentDirection() == CardinalDirection.North) {
 			if (findNext() == CardinalDirection.East) {
-				robot.rotate(Turn.LEFT,false);
+				rotate(Turn.LEFT,false);
 			}
 			else if (findNext() == CardinalDirection.West) {
-				robot.rotate(Turn.RIGHT,false);
+				rotate(Turn.RIGHT,false);
 			}
 			else if (findNext() == CardinalDirection.South) {
-				robot.rotate(Turn.AROUND,false);
+				rotate(Turn.AROUND,false);
 			}
 		}
 		else if (robot.getCurrentDirection() == CardinalDirection.South) {
 			if (findNext() == CardinalDirection.East) {
-				robot.rotate(Turn.RIGHT,false);
+				rotate(Turn.RIGHT,false);
 			}
 			else if (findNext() == CardinalDirection.West) {
-				robot.rotate(Turn.LEFT,false);
+				rotate(Turn.LEFT,false);
 			}
 			else if (findNext() == CardinalDirection.North) {
-				robot.rotate(Turn.AROUND,false);
+				rotate(Turn.AROUND,false);
 			}
 		}
 	}
@@ -165,4 +170,34 @@ public class Wizard extends ManualDriver implements RobotDriver{
 			throw new Exception();
 		}
 	}
+
+	private void move(final int distance, final boolean manual) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    robot.move(distance, manual);
+                    drive2Exit();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }, 200);
+    }
+
+    private void rotate(final Turn turn, final boolean manual) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    robot.rotate(turn, manual);
+                    drive2Exit();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }, 200);
+    }
 }

@@ -2,6 +2,7 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Direction;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
+import android.os.Handler;
 
 /**
  * 
@@ -20,8 +21,11 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
 public class WallFollower extends ManualDriver implements RobotDriver{
 	//Private Variables)
 	protected boolean initialPositionNotInRoom = false;
+	private Handler handler;
+	boolean needToMove = false;
 	//Constructor
 	public WallFollower() {
+		handler = new Handler();
 	}
 	
 	/**
@@ -31,21 +35,22 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception {
-		while (!robot.isAtExit()) {
+		if (!robot.isAtExit()) {
 			// If the robot is inside a room and there's no wall on its left, 
 			// we need to move it to the wall on its left side and turn right.
 			System.out.println(robot.getBatteryLevel());
 			checkStop();
 			wallFollow();
 		}
-		System.out.println(1);
-		while (!canSeeExit(Direction.FORWARD)) {
+		else if (!canSeeExit(Direction.FORWARD)) {
 			checkStop();
-			robot.rotate(Turn.LEFT,false);
+			rotate(Turn.LEFT,false);
 		}
-		checkStop();
-		robot.move(1, false);
-		checkStop();
+		else {
+			checkStop();
+			move(1, false);
+			checkStop();
+		}
 		return true;
 	}
 	
@@ -59,40 +64,50 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 		// we need to move it to the wall on its left side and turn right.
 		if (canSeeExit(Direction.FORWARD)) {
 			checkStop();
-			robot.move(1, false);
+			move(1, false);
+		}
+		else if (needToMove) {
+			needToMove = false;
+			checkStop();
+			move(1,false);
 		}
 		else if (robot.isInsideRoom() && distanceToObstacleNot0(Direction.LEFT) && !initialPositionNotInRoom) {
 			checkStop();
-			//robot.rotate(Turn.LEFT);
+			//rotate(Turn.LEFT);
 			if (distanceToObstacle0(Direction.RIGHT)) {
 				checkStop();
-				robot.rotate(Turn.AROUND,false);
+				rotate(Turn.AROUND,false);
 			}
-			else { 
-				if (distanceToObstacleNot0(Direction.FORWARD)) {
+			else if (distanceToObstacleNot0(Direction.FORWARD)) {
 					checkStop();
-					robot.move(1, false);
-				}
+					move(1, false);
+			}
+			else if (distanceToObstacle0(Direction.FORWARD)) {
+				checkStop();
+				rotate(Turn.RIGHT);
 			}
 		}
 		else {
 			initialPositionNotInRoom = true;
 			if (distanceToObstacle0(Direction.LEFT)
+					&& distanceToObstacle0(Direction.FORWARD)
+					&& distanceToObstacle0(Direction.RIGHT)) {
+				checkStop();
+				rotate(Turn.AROUND,false);
+			}
+			else if (distanceToObstacle0(Direction.LEFT)
 					&& distanceToObstacle0(Direction.FORWARD)) {
 				checkStop();
-				robot.rotate(Turn.RIGHT,false);
-				if (distanceToObstacle0(Direction.LEFT)
-						&& distanceToObstacle0(Direction.FORWARD)) {
-					checkStop();
-					robot.rotate(Turn.RIGHT,false);
-				}
+				rotate(Turn.RIGHT,false);
 			}
 			else if (distanceToObstacleNot0(Direction.LEFT)) {
 				checkStop();
-				robot.rotate(Turn.LEFT,false);
+				rotate(Turn.LEFT,false);
 			}
-			checkStop();
-			robot.move(1, false);
+			else {
+				checkStop();
+				move(1, false);
+			}
 		}
 	}
 	
@@ -141,6 +156,37 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 	private boolean distanceToObstacleNot0(Direction direction) throws Exception {
 		checkStop();
 		return robot.distanceToObstacle(direction) != 0;
+	}
+
+	private void move(final int distance, final boolean manual) {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					robot.move(distance, manual);
+					drive2Exit();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, 200);
+	}
+
+	private void rotate(final Turn turn, final boolean manual) {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					needToMove = true;
+					robot.rotate(turn, manual);
+					drive2Exit();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, 200);
 	}
 	
 	/**

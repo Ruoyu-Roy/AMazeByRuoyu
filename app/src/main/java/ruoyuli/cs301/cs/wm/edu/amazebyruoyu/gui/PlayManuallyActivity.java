@@ -156,7 +156,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void sizeUp(View view) {
         Log.v(LOG_V, "Increment map size.");
-        statePlaying.keyDown(UserInput.ZoomIn, 0, false);
+        statePlaying.keyDown(UserInput.ZoomIn, 0, true);
         //Toast.makeText(getApplicationContext(), "Map Incre", Toast.LENGTH_SHORT).show();
     }
 
@@ -165,7 +165,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void sizeDown(View view) {
         Log.v(LOG_V, "Decrement map size.");
-        statePlaying.keyDown(UserInput.ZoomOut, 0, false);
+        statePlaying.keyDown(UserInput.ZoomOut, 0, true);
         //Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
     }
 
@@ -190,11 +190,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Wall_Button clicked. Show the currently visible walls");
-                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
-                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -204,13 +204,13 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
-                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
                     size_down.setVisibility(View.VISIBLE);
                 } else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
-                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
@@ -221,11 +221,11 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Clue_Buttons clicked. Show the solution.");
-                    statePlaying.keyDown(UserInput.ToggleSolution, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleSolution, 0, true);
                     //Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.v(LOG_V, "Clue_Button unclicked. Hide the solution");
-                    statePlaying.keyDown(UserInput.ToggleSolution, 0, false);
+                    statePlaying.keyDown(UserInput.ToggleSolution, 0, true);
                     //Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
                 }
             }

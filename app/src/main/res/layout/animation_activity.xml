@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -17,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="145dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="0dp"
         android:contentDescription="@string/size_up"
         android:onClick="sizeUp"
         app:srcCompat="@drawable/inre_map" />
@@ -28,7 +29,7 @@
         android:layout_height="30dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="145dp"
         android:onClick="sizeDown"
         android:contentDescription="@string/size_down"
@@ -107,8 +108,9 @@
         android:textOn="@string/start" />
 
     <ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazePanel
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:id="@+id/mazePanelA"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
         android:layout_alignTop="@+id/size_up_map"
         android:layout_centerHorizontal="true" />
 

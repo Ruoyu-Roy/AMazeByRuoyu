@@ -8,9 +8,12 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 		
 
 //import generation.Distance;
+import java.util.logging.Handler;
+
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Constants.UserInput;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui.PlayAnimationActivity;
 
 public class ManualDriver implements RobotDriver{
 	// basic varaible
@@ -20,6 +23,8 @@ public class ManualDriver implements RobotDriver{
 	protected Distance distance;
 	protected float initialBattery = 3000;
 	protected int distanceTraveled;
+	public PlayAnimationActivity playAnimationActivity;
+	private Handler handler;
 	
 	
 
@@ -32,6 +37,11 @@ public class ManualDriver implements RobotDriver{
 	public void setRobot(Robot r) {
 		// TODO Auto-generated method stub
 		this.robot = r;
+	}
+
+	@Override
+	public void setAnimation(PlayAnimationActivity animationActivity) {
+		playAnimationActivity = animationActivity;
 	}
 
 	/**

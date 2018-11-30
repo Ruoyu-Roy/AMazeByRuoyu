@@ -2,6 +2,7 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Direction;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
+import android.os.Handler;
 
 /**
  * 
@@ -20,10 +21,15 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
  */
 
 public class Pledge extends ManualDriver implements RobotDriver{
+
+	private Handler handler;
+	private int counter = 0;
+	private boolean pledge = false;
+	private boolean needToMove = false;
 	
 	//Contructor
 	public Pledge() {
-		
+		handler = new Handler();
 	}
 	
 	/**
@@ -33,17 +39,19 @@ public class Pledge extends ManualDriver implements RobotDriver{
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception{
-		while (!robot.isAtExit()) {
+		if (!robot.isAtExit()) {
 			checkStop();
 			pledge();
 		}
-		while (!canSeeExit(Direction.FORWARD)) {
+		else if (!canSeeExit(Direction.FORWARD)) {
 			checkStop();
-			robot.rotate(Turn.LEFT,false);
+			rotate(Turn.LEFT,false);
 		}
-		checkStop();
-		robot.move(1, false);
-		checkStop();
+		else {
+			checkStop();
+			move(1, false);
+			checkStop();
+		}
 		return true;
 	}
 	
@@ -52,34 +60,55 @@ public class Pledge extends ManualDriver implements RobotDriver{
 	 * 
 	 * @throws Exception
 	 */
-	public void pledge() throws Exception {
-		while (distanceToObstacleNot0(Direction.FORWARD)) {
-			checkStop();
-			robot.move(1, false);	
-		}
-		int counter = 0;
-		robot.rotate(Turn.RIGHT,false);
-		counter--;
-		while (counter != 0 && !robot.isAtExit()) {
-			checkStop();
-			if (distanceToObstacle0(Direction.LEFT)
-					&& distanceToObstacle0(Direction.FORWARD)) {
-				robot.rotate(Turn.RIGHT,false);
-				counter--;
+	private void pledge() throws Exception {
+		if (!pledge) {
+			if (distanceToObstacleNot0(Direction.FORWARD)) {
 				checkStop();
-				if (distanceToObstacle0(Direction.LEFT)
+				move(1, false);
+			}
+			else if (distanceToObstacle0(Direction.FORWARD)) {
+				pledge = true;
+				rotate(Turn.RIGHT, false);
+				counter--;
+			}
+		}
+		else if (pledge) {
+			if (counter != 0 && !robot.isAtExit()) {
+				if (needToMove) {
+					needToMove = false;
+					checkStop();
+					move(1,false);
+				}
+				else if (distanceToObstacle0(Direction.LEFT)
+						&& distanceToObstacle0(Direction.FORWARD)
+						&& distanceToObstacle0(Direction.RIGHT)) {
+					needToMove = true;
+					counter--;
+					counter--;
+					rotate(Turn.AROUND,false);
+					checkStop();
+				}
+				else if (distanceToObstacle0(Direction.LEFT)
 						&& distanceToObstacle0(Direction.FORWARD)) {
-					robot.rotate(Turn.RIGHT,false);
+					rotate(Turn.RIGHT, false);
+					needToMove = true;
 					counter--;
 					checkStop();
 				}
+				else if (distanceToObstacleNot0(Direction.LEFT)) {
+					rotate(Turn.LEFT, false);
+					needToMove = true;
+					counter++;
+					checkStop();
+				}
+				else {
+					move(1, false);
+				}
 			}
-			else if (distanceToObstacleNot0(Direction.LEFT)) {
-				robot.rotate(Turn.LEFT,false);
-				counter++;
-				checkStop();
+			else if (counter == 0) {
+				pledge = false;
+				drive2Exit();
 			}
-			robot.move(1, false);
 		}
 	}
 	
@@ -92,6 +121,36 @@ public class Pledge extends ManualDriver implements RobotDriver{
 			robot.getMaze().toEnd(false,false);
 			throw new Exception();
 		}
+	}
+
+	private void move(final int distance, final boolean manual) {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					robot.move(distance, manual);
+					drive2Exit();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, 200);
+	}
+
+	private void rotate(final Turn turn, final boolean manual) {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					robot.rotate(turn, manual);
+					drive2Exit();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, 200);
 	}
 	
 	/**

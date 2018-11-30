@@ -9,15 +9,18 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.os.Handler;
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.BasicRobot;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Constants;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Constants.UserInput;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.DataHolder;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Explorer;
-import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.ManualDriver;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazeConfiguration;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.MazePanel;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Pledge;
@@ -63,6 +66,19 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private Robot robot;
     private RobotDriver rdriver;
 
+    public Handler robotHandler = new Handler();
+    public Runnable moverobot = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                rdriver.drive2Exit();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -86,10 +102,16 @@ public class PlayAnimationActivity extends AppCompatActivity {
         statePlaying.setActivity(this);
         robot.setMaze(statePlaying);
         rdriver.setRobot(robot);
+        rdriver.setAnimation(this);
         statePlaying.setRobotAndDriver(robot, rdriver);
         statePlaying.setMazeConfiguration(mazeConfiguration);
+        if (driver.equalsIgnoreCase("Explorer")) {
+            ((Explorer) rdriver).setUp();
+        }
         shortestPath = mazeConfiguration.getDistanceToExit(mazeConfiguration.getStartingPosition()[0],
                 mazeConfiguration.getStartingPosition()[1]);
+        statePlaying.start(mazePanel);
+        robotHandler.postDelayed(moverobot, 500);
     }
 
     /*
@@ -106,6 +128,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         pause = (ToggleButton) findViewById(R.id.pausetoggle);
         size_up = (ImageButton) findViewById(R.id.size_up_map);
         size_down = (ImageButton) findViewById(R.id.size_down_map);
+        mazePanel = (MazePanel) findViewById(R.id.mazePanelA);
     }
 
     private void setUpDriver() {
@@ -123,12 +146,21 @@ public class PlayAnimationActivity extends AppCompatActivity {
         }
     }
 
+    private void disableButtons() {
+        wall.setEnabled(false);
+        map.setEnabled(false);
+        clue.setEnabled(false);
+        size_up.setEnabled(false);
+        size_down.setEnabled(false);
+    }
+
     /*
     Enable user to go to winning screen by clicking go2Winning button.
      */
     public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
-        Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
+        disableButtons();
+        //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("energy_consumption", TOTAL_ENERGY-energyReserve);
         intent.putExtra("drvalgo", driver);
@@ -143,7 +175,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
-        Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
+        disableButtons();
+        //Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LosingActivity.class);
         intent.putExtra("energy_consumption", TOTAL_ENERGY-energyReserve);
         intent.putExtra("drvalgo", driver);
@@ -190,11 +223,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Wall_Button clicked. Show the currently visible walls");
-                    Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
-                    Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -203,14 +238,15 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
-                    Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
                     size_down.setVisibility(View.VISIBLE);
                 }
                 else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
-
-                    Toast.makeText(getApplicationContext(), "Size Button Hiden", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Size Button Hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
             }
@@ -220,11 +256,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Clue_Buttons clicked. Show the solution.");
-                    Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(Constants.UserInput.ToggleSolution, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Clue Button on", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.v(LOG_V, "Clue_Button unclicked. Hide the solution");
-                    Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
+                    statePlaying.keyDown(UserInput.ToggleSolution, 0, false);
+                    //Toast.makeText(getApplicationContext(), "Clue Button off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -233,12 +271,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     Log.v(LOG_V,"Pause button clicked. Pause the game.");
-                    Toast.makeText(getApplicationContext(), "Game Paused", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Game Paused", Toast.LENGTH_SHORT).show();
                     gameStop = true;
                 }
                 else{
                     Log.v(LOG_V, "Start button clicked. Start the game.");
-                    Toast.makeText(getApplicationContext(), "Game Start", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Game Start", Toast.LENGTH_SHORT).show();
                     gameStop = false;
                 }
             }

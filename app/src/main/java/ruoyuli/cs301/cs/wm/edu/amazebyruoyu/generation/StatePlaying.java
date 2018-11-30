@@ -67,6 +67,8 @@ public class StatePlaying extends DefaultState {
     
     public StatePlaying() {
         started = false;
+        playManuallyActivity = null;
+        playAnimationActivity = null;
     }
     @Override
     public void setMazeConfiguration(MazeConfiguration config) {
@@ -108,6 +110,15 @@ public class StatePlaying extends DefaultState {
         	// else: dry-run without graphics, most likely for testing purposes
         	printWarning();
         }
+
+        /*if (playManuallyActivity == null) {
+            try {
+                driver.drive2Exit();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }*/
         
         /*if (!control.test) {
 	        if (control.robotAlgo != Robots.ManualDriver) {
@@ -176,7 +187,9 @@ public class StatePlaying extends DefaultState {
         		walk(1);
             // check termination, did we leave the maze?
             if (isOutside(px,py)) {
-                playManuallyActivity.increasePath();
+                if (playManuallyActivity != null) {
+                    playManuallyActivity.increasePath();
+                }
                 toEnd(true, manual);
             }
             else if (isRobotStopped()){
