@@ -31,18 +31,15 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	//Variables
 	protected int[][] cellVisitTimes;
 	protected SingleRandom random;
-	protected boolean initialPositionInRoom;
 	private Handler handler;
 	private boolean needToMove = false;
-	//private boolean newRoom = false;
-	//private ArrayList<int[]> doors = new ArrayList<int[]>();// The new door the robot finds
-	//private int [] newDoor = null;
-	//private int [] curDoor = null;
+	List<List<int[]>> mainList = new ArrayList<List<int[]>>();
+	List<int[]> doorList = new ArrayList<int[]>();
+	Cells cells;
 	
 	//Contructor
 	public Explorer() {
 		random = SingleRandom.getRandom();
-		initialPositionInRoom = true;
 		handler = new Handler();
 	}
 
@@ -54,6 +51,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				cellVisitTimes[i][j] = 0;
 			}
 		}
+		cells = robot.getMaze().getMazeConfiguration().getMazecells();
 	}
 	
 	/**
@@ -78,11 +76,6 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				rotate(Turn.RIGHT,false);
 			}
 			else if (!robot.isInsideRoom()) {
-				initialPositionInRoom = false;
-				//doors.clear();
-				//newDoor = null;
-				//curDoor = null;
-				//newRoom = true;
 				notInRoomExplore(curP);
 			}
 			else if (robot.isInsideRoom()) {
@@ -103,6 +96,65 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			checkStop();
 		}
 		return true;
+	}
+
+	private void performRotation(CardinalDirection current, CardinalDirection project) {
+		if(current == CardinalDirection.North) {
+			if(project == CardinalDirection.North) {
+				return;
+			}
+			if(project == CardinalDirection.South) {
+				robot.rotate(Turn.AROUND,false);
+			}
+			if(project == CardinalDirection.West) {
+				robot.rotate(Turn.RIGHT,false);
+			}
+			if(project == CardinalDirection.East) {
+				robot.rotate(Turn.LEFT,false);
+			}
+		}
+		if(current == CardinalDirection.South) {
+			if(project == CardinalDirection.North) {
+				robot.rotate(Turn.AROUND,false);
+			}
+			if(project == CardinalDirection.South) {
+				return;
+			}
+			if(project == CardinalDirection.West) {
+				robot.rotate(Turn.LEFT,false);
+			}
+			if(project == CardinalDirection.East) {
+				robot.rotate(Turn.RIGHT,false);
+			}
+		}
+		if(current == CardinalDirection.West) {
+			if(project == CardinalDirection.North) {
+				robot.rotate(Turn.LEFT,false);
+			}
+			if(project == CardinalDirection.South) {
+				robot.rotate(Turn.RIGHT,false);
+			}
+			if(project == CardinalDirection.West) {
+				return;
+			}
+			if(project == CardinalDirection.East) {
+				robot.rotate(Turn.AROUND,false);
+			}
+		}
+		if(current == CardinalDirection.East) {
+			if(project == CardinalDirection.North) {
+				robot.rotate(Turn.RIGHT,false);
+			}
+			if(project == CardinalDirection.South) {
+				robot.rotate(Turn.LEFT,false);
+			}
+			if(project == CardinalDirection.West) {
+				robot.rotate(Turn.AROUND,false);
+			}
+			if(project == CardinalDirection.East) {
+				return;
+			}
+		}
 	}
 	
 	// Find a cell on a certain direction
@@ -149,6 +201,72 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		}
 		return curPosition;
 	}
+
+	public int findBorderOfRoom1(int x, int y) {
+		for (int i = x; i < 401; i ++) {
+			if (!cells.isInRoom(i, y)) {
+				return i - 1;
+			}
+		}
+		return -1;
+	}
+	public int findBorderOfRoom2(int x, int y) {
+		for (int i = x; i >= 0; i --) {
+			if (!cells.isInRoom(i, y)) {
+				return i + 1;
+			}
+		}
+		return -1;
+	}
+	public int findBorderOfRoom3(int x, int y) {
+		for (int i = y; i < 401; i ++) {
+			if (!cells.isInRoom(x, i)) {
+				return i - 1;
+			}
+		}
+		return -1;
+	}
+	public int findBorderOfRoom4(int x, int y) {
+		for (int i = y; i >= 0; i --) {
+			if (!cells.isInRoom(x, i)) {
+				return i + 1;
+			}
+		}
+		return -1;
+	}
+
+	public boolean checkIfInList(List<List<int[]>> mainList, int[] door) {
+		for (int i = 0; i < mainList.size(); i ++) {
+			for (int j = 0; j < mainList.get(i).size(); j ++) {
+				if (mainList.get(i).get(j)[0] == door[0] && mainList.get(i).get(j)[1] == door[1]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public int indexOfDoorList(List<List<int[]>> mainList, int[] door) {
+		for (int i = 0; i < mainList.size(); i ++) {
+			for (int j = 0; j < mainList.get(i).size(); j ++) {
+				if (mainList.get(i).get(j)[0] == door[0] && mainList.get(i).get(j)[1] == door[1]) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
+	public boolean addDoorListToMainList(List<List<int[]>> mainList, List<int[]> doorList) {
+		for (int i = 0; i < mainList.size(); i ++) {
+			for (int j = 0; j < mainList.get(i).size() && j < doorList.size(); j ++) {
+				if (mainList.get(i).get(j).equals(doorList.get(j))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
 	/**
 	 * How robot explore in maze when it is not in a room
@@ -165,6 +283,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		if (needToMove) {
 			needToMove = false;
 			move(1,false);
+			cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
 		}
 		// If all three directions are available, 
 		else if (distanceToObstacleNot0(Direction.FORWARD)
@@ -177,6 +296,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				int randomNum = random.nextIntWithinInterval(0, 2);
 				switch(randomNum) {
 				case 0:
+					needToMove = true;
 					drive2Exit();
 					break;
 				case 1:
@@ -192,6 +312,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
 				case 0:
+					needToMove = true;
 					drive2Exit();
 					break;
 				case 1:
@@ -204,6 +325,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
 				case 0:
+					needToMove = true;
 					drive2Exit();
 					break;
 				case 1:
@@ -223,6 +345,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 					&& cellVisitTimes[cellR[0]][cellR[1]] < cellVisitTimes[cellL[0]][cellL[1]]){
 				rotate(Turn.RIGHT, false);
 			}
+			else {
+				needToMove = true;
+				drive2Exit();
+			}
 		}
 		// If there are only two options available,
 		else if (distanceToObstacleNot0(Direction.FORWARD) 
@@ -234,6 +360,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
 				case 0:
+					needToMove = true;
 					drive2Exit();
 					break;
 				case 1:
@@ -244,6 +371,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			// Choose the one with less visited time.
 			else if (cellVisitTimes[cellL[0]][cellL[1]] < cellVisitTimes[cellF[0]][cellF[1]]) {
 				rotate(Turn.LEFT, false);
+			}
+			else {
+				needToMove = true;
+				drive2Exit();
 			}
 		}
 		// If there are only two options available,
@@ -256,6 +387,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
 				case 0:
+					needToMove = true;
 					drive2Exit();
 					break;
 				case 1:
@@ -266,6 +398,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			// Choose the one with less visited time.
 			else if (cellVisitTimes[cellR[0]][cellR[1]] < cellVisitTimes[cellF[0]][cellF[1]]) {
 				rotate(Turn.RIGHT, false);
+			}
+			else {
+				needToMove = true;
+				drive2Exit();
 			}
 		}
 		// If there are only two options available,
@@ -292,6 +428,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			// Choose the one with less visited time.
 			else if (cellVisitTimes[cellL[0]][cellL[1]] < cellVisitTimes[cellR[0]][cellR[1]]) {
 				rotate(Turn.LEFT,false);
+			}
+			else {
+				needToMove = true;
+				drive2Exit();
 			}
 		}
 		// If there's only one option, pick that one.
@@ -325,111 +465,160 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	 * @throws Exception
 	 */
 	private void inRoomExplore() throws Exception {
-		// Create a list that records all the doors in a room.
-		ArrayList<int[]> doors = new ArrayList<int[]>();
-		// The new door the robot finds
-		int [] newDoor = null;
-		// The door that robot finds most recently
-		int [] curDoor = null;
-		// If the robot's position is initialized in a room, move the robot to let the wall being on its left side.
-		if (initialPositionInRoom && distanceToObstacleNot0(Direction.LEFT)) {
-			if (distanceToObstacle0(Direction.RIGHT)) {
-				checkStop();
-				rotate1(Turn.AROUND,false);
+		cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
+		int xRight = 0;
+		try {
+			xRight = findBorderOfRoom1(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+			int xLeft = findBorderOfRoom2(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+			int yUp = findBorderOfRoom3(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+			int yDown = findBorderOfRoom4(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1]);
+			for (int a = xLeft; a <= xRight; a++) {
+				if (cells.hasNoWall(a, yDown, CardinalDirection.North)) {
+					int[] door = {a, yDown, 0};
+					if (checkIfInList(mainList, door)) {
+						doorList.add(door);
+					} else {
+						doorList = mainList.get(indexOfDoorList(mainList, door));
+					}
+				}
+				if (cells.hasNoWall(a, yUp, CardinalDirection.South)) {
+					int[] door = {a, yUp, 0};
+					if (checkIfInList(mainList, door)) {
+						doorList.add(door);
+					} else {
+						doorList = mainList.get(indexOfDoorList(mainList, door));
+					}
+				}
+			}
+			for (int b = yDown; b <= yUp; b++) {
+				if (cells.hasNoWall(xLeft, b, CardinalDirection.West)) {
+					int[] door = {xLeft, b, 0};
+					if (checkIfInList(mainList, door)) {
+						doorList.add(door);
+					} else {
+						doorList = mainList.get(indexOfDoorList(mainList, door));
+					}
+				}
+				if (cells.hasNoWall(xRight, b, CardinalDirection.East)) {
+					int[] door = {xRight, b, 0};
+					if (checkIfInList(mainList, door)) {
+						doorList.add(door);
+					} else {
+						doorList = mainList.get(indexOfDoorList(mainList, door));
+					}
+				}
+			}
+			if (addDoorListToMainList(mainList, doorList)) {
+				mainList.add(doorList);
+			}
+			for (int j = 0; j < doorList.size(); j++) {
+				if (doorList.get(j)[0] == robot.getCurrentPosition()[0] && doorList.get(j)[1] == robot.getCurrentPosition()[1]) {
+					doorList.get(j)[2] += 1;
+					break;
+				}
+			}
+			//select the door to escape room
+			int min = doorList.get(0)[2];
+
+			for (int m = 0; m < doorList.size(); m++) {
+				if (doorList.get(m)[2] < min) {
+					min = doorList.get(m)[2];
+				}
+			}
+			List<int[]> doorUsageList = new ArrayList<int[]>(doorList);
+			for (int n = 0; n < doorUsageList.size(); n++) {
+				if (doorUsageList.get(n)[2] > min) {
+					doorUsageList.remove(n);
+					n -= 1;
+				}
+			}
+			int r = random.nextIntWithinInterval(0, doorUsageList.size() - 1);
+			int q = doorList.indexOf(doorUsageList.get(r));
+
+			//move robot to the selected door
+			int doorx = doorList.get(q)[0];
+			int doory = doorList.get(q)[1];
+			int initx = robot.getCurrentPosition()[0];
+			int inity = robot.getCurrentPosition()[1];
+
+			//add 1 to the visit where it went out
+			cellVisitTimes[doorx][doory] += 1;
+			if (initx > doorx) {
+				performRotation(robot.getCurrentDirection(), CardinalDirection.West);
+				for (int i = 0; i < initx - doorx; i++) {
+					checkStop();
+					robot.move(1, false);
+				}
+				if (inity > doory) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.North);
+					for (int i = 0; i < inity - doory; i++) {
+						checkStop();
+						robot.move(1, false);
+					}
+				}
+				if (doory > inity) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.South);
+					for (int i = 0; i < doory - inity; i++) {
+						checkStop();
+						robot.move(1, false);
+					}
+				}
+			}
+			else if (initx < doorx) {
+				performRotation(robot.getCurrentDirection(), CardinalDirection.East);
+				for (int i = 0; i < doorx - initx; i++) {
+					checkStop();
+					robot.move(1, false);
+				}
+				if (inity > doory) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.North);
+					for (int i = 0; i < inity - doory; i++) {
+						checkStop();
+						robot.move(1, false);
+					}
+				}
+				if (doory > inity) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.South);
+					for (int i = 0; i < doory - inity; i++) {
+						checkStop();
+						robot.move(1, false);
+					}
+				}
 			}
 			else {
-				while (distanceToObstacleNot0(Direction.FORWARD)) {
-					checkStop();
-					move1(1, false);
-					if (!robot.isInsideRoom()) {
+				if (inity > doory) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.North);
+					for (int i = 0; i < inity - doory; i++) {
 						checkStop();
-						rotate1(Turn.AROUND,false);
-						checkStop();
-						move1(1, false);
-						checkStop();
-						rotate1(Turn.LEFT,false);
-
+						robot.move(1, false);
 					}
-					if (distanceToObstacle0(Direction.LEFT))
+				}
+				else if (doory > inity) {
+					performRotation(robot.getCurrentDirection(), CardinalDirection.South);
+					for (int i = 0; i < doory - inity; i++) {
+						checkStop();
+						robot.move(1, false);
+					}
+				}
+			}
+			for (CardinalDirection cdd : CardinalDirection.values()) {
+				if (robot.getMaze().getMazeConfiguration().getMazecells().hasNoWall(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1], cdd) && !robot.getMaze().getMazeConfiguration().getMazecells().isInRoom(robot.getCurrentPosition()[0] + cdd.getDirection()[0], robot.getCurrentPosition()[1] + cdd.getDirection()[1])){
+					performRotation(robot.getCurrentDirection(), cdd);
+					for (int k = 0; k < doorList.size(); k ++) {
+							if (doorList.get(k)[0] == robot.getCurrentPosition()[0] && doorList.get(k)[1] == robot.getCurrentPosition()[1]) {
+								doorList.get(k)[2] += 1;
+								break;
+							}
+						}
+						//walk out of the room
+						move1(1, false);
+						cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]] += 1;
 						break;
 				}
 			}
-			checkStop();
-			if (distanceToObstacle0(Direction.FORWARD))
-				rotate1(Turn.RIGHT,false);
-			initialPositionInRoom = false;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		// If the robot enters a new room, just turn left and start scanning by going around in the room.
-		// Whenever the robot finds a door, compares it to the door contains in the list.
-		// If the door has been visited more times, just forget it and move on.
-		// If the door has been visited less times, clear the list and add it to the list.
-		// If the door ties with those in the least, simply add it to the list.
-		// Then we randomly pick one door in the list.
-		else if (!initialPositionInRoom && distanceToObstacleNot0(Direction.LEFT)) {
-			checkStop();
-			rotate1(Turn.LEFT,false);
-		}
-		checkStop();
-		int [] iniPos = robot.getCurrentPosition();
-		do {
-			do {
-				checkStop();
-				if (distanceToObstacle0(Direction.FORWARD) && this.robot.isInsideRoom()) {
-					rotate1(Turn.RIGHT,false);
-				}
-				if (!robot.isInsideRoom()) {
-					checkStop();
-					rotate1(Turn.AROUND,false);
-					checkStop();
-					move1(1, false);
-					checkStop();
-					rotate1(Turn.LEFT,false);
-				}
-				else
-					move1(1, false);
-				System.out.println(robot.getBatteryLevel());
-			} while (distanceToObstacle0(Direction.LEFT));
-			this.cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
-			curDoor = cellFinder(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1], Direction.LEFT);
-			if (newDoor == null) {
-				newDoor = curDoor;
-				doors.add(robot.getCurrentPosition());
-			}
-			else if (cellVisitTimes[newDoor[0]][newDoor[1]] == cellVisitTimes[curDoor[0]][curDoor[1]]) {
-				doors.add(robot.getCurrentPosition());
-			}
-			else if (cellVisitTimes[newDoor[0]][newDoor[1]] > cellVisitTimes[curDoor[0]][curDoor[1]]) {
-				doors.clear();
-				doors.add(robot.getCurrentPosition());
-				newDoor = curDoor;
-			}
-			checkStop();
-		} while (!Arrays.equals(robot.getCurrentPosition(), iniPos));
-		int randomNum1 = random.nextIntWithinInterval(0, doors.size()-1);
-		int [] deDoor = doors.get(randomNum1);
-		do {
-			checkStop();
-			if (distanceToObstacle0(Direction.FORWARD) && this.robot.isInsideRoom()) {
-				rotate1(Turn.RIGHT,false);
-				checkStop();
-			}
-			if (!robot.isInsideRoom()) {
-				rotate1(Turn.AROUND,false);
-				checkStop();
-				move1(1, false);
-				checkStop();
-				rotate1(Turn.LEFT,false);
-			}
-			else
-				move1(1, false);
-		} while (!Arrays.equals(robot.getCurrentPosition(), deDoor));
-		checkStop();
-		if (distanceToObstacleNot0(Direction.LEFT))
-			rotate1(Turn.LEFT,false);
-		checkStop();
-		move1(1, false);
-		checkStop();
-		cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
 	}
 	
 	/**
@@ -502,9 +691,15 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				robot.move(distance,false);
+				try {
+					robot.move(distance, manual);
+					drive2Exit();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}, 200);
+		}, 500);
 	}
 
 	private void rotate1(final Turn turn, final boolean manual) {
@@ -542,22 +737,6 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	 */
 	public void setCellVisitTimes(int[][] cellV){
 		cellVisitTimes = cellV;
-	}
-	
-	/**
-	 * 
-	 * @return whether the robot gets initialized in a room
-	 */
-	public boolean getInitialPositionInRoom() {
-		return initialPositionInRoom;
-	}
-	
-	/**
-	 * set whether the robot gets initialized in a room
-	 * @param iniRoom
-	 */
-	public void setInitialPositionInRoom(boolean iniRoom) {
-		initialPositionInRoom = iniRoom;
 	}
 }
 
