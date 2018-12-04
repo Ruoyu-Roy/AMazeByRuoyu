@@ -62,8 +62,8 @@
         android:layout_width="71dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/cluebuttonP"
-        android:layout_alignEnd="@+id/energy"
         android:layout_marginTop="0dp"
+        android:layout_toStartOf="@+id/progressBar2"
         android:text="@string/wall_off"
         android:textOff="@string/wall_off"
         android:textOn="@string/wall_on" />

@@ -387,7 +387,7 @@ public class BasicRobot implements Robot{
 	private void checkBatteryLevel() {
 		if (batteryLevel == 0) {
 			stop = true;
-			controller.keyDown(UserInput.Left, ROTATING_ENERGY);
+			controller.toEnd(false, false);
 		}
 	}
 	

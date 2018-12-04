@@ -175,6 +175,7 @@ public class StatePlaying extends DefaultState {
     public boolean keyDown(UserInput key, int value, boolean manual) {
         if (!started)
             return false;
+        playAnimationActivity.updateBatteryBar();
         // react to input for directions and interrupt signal (ESCAPE key)  
         // react to input for displaying a map of the current path or of the overall maze (on/off toggle switch)
         // react to input to display solution (on/off toggle switch)

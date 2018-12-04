@@ -159,6 +159,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
+        pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
@@ -175,6 +176,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
+        pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LosingActivity.class);
@@ -210,6 +212,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     Update the battery bar based on the info given.
      */
     public void updateBatteryBar(){
+        energyReserve = (int)robot.getBatteryLevel();
+        energy.setText("ENERGY: " + Integer.toString(energyReserve));
         energybar.setProgress(energyReserve);
     }
 

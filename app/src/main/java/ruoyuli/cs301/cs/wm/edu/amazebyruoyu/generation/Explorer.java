@@ -10,7 +10,7 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Robot.Turn;
 import android.os.Handler;
 
 /**
- * 
+ *
  * Explorer: 
  * 1. If outside of a room, it 1) checks its options by asking its available distance sensors, 2)
  * picks a direction to the adjacent cell least traveled (ties are resolved by throwing the dice,
@@ -18,25 +18,25 @@ import android.os.Handler;
  * 2. If the explorer gets into a room, it scans it to find all possible doors, picks the door least
  * used (ties are resolved by randomization) and then runs for the door to leave the room. 
  * 3. If it is at the exit or it can see the exit, it goes for it. 
- * 
+ *
  * Pledge Algorithm extends from ManualDirver using the interface of RobotDriver
- * 
+ *
  * Collaborators: A. A controller that holds a maze to explore B. A Robot that record all the information and hold all the moves.
- * 
+ *
  * @author ruoyuli
  *
  */
 
 public class Explorer extends ManualDriver implements RobotDriver{
 	//Variables
-	protected int[][] cellVisitTimes;
+	private int[][] cellVisitTimes;
 	protected SingleRandom random;
 	private Handler handler;
 	private boolean needToMove = false;
-	List<List<int[]>> mainList = new ArrayList<List<int[]>>();
-	List<int[]> doorList = new ArrayList<int[]>();
+	private List<List<int[]>> mainList = new ArrayList<List<int[]>>();
+	private List<int[]> doorList = new ArrayList<int[]>();
 	Cells cells;
-	
+
 	//Contructor
 	public Explorer() {
 		random = SingleRandom.getRandom();
@@ -53,10 +53,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		}
 		cells = robot.getMaze().getMazeConfiguration().getMazecells();
 	}
-	
+
 	/**
-	 * Drives the robot towards the exit given it exists and 
-	 * given the robot's energy supply lasts long enough. 
+	 * Drives the robot towards the exit given it exists and
+	 * given the robot's energy supply lasts long enough.
 	 * @return true if driver successfully reaches the exit, false otherwise
 	 */
 	@Override
@@ -156,7 +156,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			}
 		}
 	}
-	
+
 	// Find a cell on a certain direction
 	private int[] cellFinder(int x, int y, Direction dir) throws Exception {
 		int [] curPosition = robot.getCurrentPosition();
@@ -267,10 +267,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		}
 		return true;
 	}
-	
+
 	/**
 	 * How robot explore in maze when it is not in a room
-	 * 
+	 *
 	 * @param curP
 	 * @throws Exception
 	 */
@@ -285,52 +285,52 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			move(1,false);
 			cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
 		}
-		// If all three directions are available, 
+		// If all three directions are available,
 		else if (distanceToObstacleNot0(Direction.FORWARD)
 				&& distanceToObstacleNot0(Direction.LEFT)
 				&& distanceToObstacleNot0(Direction.RIGHT)) {
 			// If they all tie, randomly choose one direction.
 			checkStop();
-			if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellL[0]][cellL[1]] 
+			if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellL[0]][cellL[1]]
 					&& cellVisitTimes[cellR[0]][cellR[1]] == cellVisitTimes[cellL[0]][cellL[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 2);
 				switch(randomNum) {
-				case 0:
-					needToMove = true;
-					drive2Exit();
-					break;
-				case 1:
-					rotate(Turn.LEFT, false);
-					break;
-				case 2:
-					rotate(Turn.RIGHT, false);
-					break;
+					case 0:
+						needToMove = true;
+						drive2Exit();
+						break;
+					case 1:
+						rotate(Turn.LEFT, false);
+						break;
+					case 2:
+						rotate(Turn.RIGHT, false);
+						break;
 				}
 			}
 			// If two of them tie, just randomly pick one from these two.
 			else if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellL[0]][cellL[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
-				case 0:
-					needToMove = true;
-					drive2Exit();
-					break;
-				case 1:
-					this.rotate(Turn.LEFT, false);
-					break;
+					case 0:
+						needToMove = true;
+						drive2Exit();
+						break;
+					case 1:
+						this.rotate(Turn.LEFT, false);
+						break;
 				}
 			}
 			// If two of them tie, just randomly pick one from these two.
 			else if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellR[0]][cellR[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
-				case 0:
-					needToMove = true;
-					drive2Exit();
-					break;
-				case 1:
-					this.rotate(Turn.RIGHT, false);
-					break;
+					case 0:
+						needToMove = true;
+						drive2Exit();
+						break;
+					case 1:
+						this.rotate(Turn.RIGHT, false);
+						break;
 				}
 			}
 			// Choose the least visited cell
@@ -351,7 +351,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			}
 		}
 		// If there are only two options available,
-		else if (distanceToObstacleNot0(Direction.FORWARD) 
+		else if (distanceToObstacleNot0(Direction.FORWARD)
 				&& distanceToObstacleNot0(Direction.LEFT)
 				&& distanceToObstacle0(Direction.RIGHT)){
 			checkStop();
@@ -359,13 +359,13 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellL[0]][cellL[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
-				case 0:
-					needToMove = true;
-					drive2Exit();
-					break;
-				case 1:
-					rotate(Turn.LEFT, false);
-					break;
+					case 0:
+						needToMove = true;
+						drive2Exit();
+						break;
+					case 1:
+						rotate(Turn.LEFT, false);
+						break;
 				}
 			}
 			// Choose the one with less visited time.
@@ -378,7 +378,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			}
 		}
 		// If there are only two options available,
-		else if (distanceToObstacleNot0(Direction.FORWARD) 
+		else if (distanceToObstacleNot0(Direction.FORWARD)
 				&& distanceToObstacleNot0(Direction.RIGHT)
 				&& distanceToObstacle0(Direction.LEFT)){
 			checkStop();
@@ -386,13 +386,13 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			if (cellVisitTimes[cellF[0]][cellF[1]] == cellVisitTimes[cellR[0]][cellR[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
-				case 0:
-					needToMove = true;
-					drive2Exit();
-					break;
-				case 1:
-					rotate(Turn.RIGHT, false);
-					break;
+					case 0:
+						needToMove = true;
+						drive2Exit();
+						break;
+					case 1:
+						rotate(Turn.RIGHT, false);
+						break;
 				}
 			}
 			// Choose the one with less visited time.
@@ -405,7 +405,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			}
 		}
 		// If there are only two options available,
-		else if (distanceToObstacleNot0(Direction.LEFT) 
+		else if (distanceToObstacleNot0(Direction.LEFT)
 				&& distanceToObstacleNot0(Direction.RIGHT)
 				&& distanceToObstacle0(Direction.FORWARD)){
 			checkStop();
@@ -413,12 +413,12 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			if (cellVisitTimes[cellL[0]][cellL[1]] == cellVisitTimes[cellR[0]][cellR[1]]) {
 				int randomNum = random.nextIntWithinInterval(0, 1);
 				switch(randomNum) {
-				case 0:
-					rotate(Turn.LEFT, false);
-					break;
-				case 1:
-					rotate(Turn.RIGHT, false);
-					break;
+					case 0:
+						rotate(Turn.LEFT, false);
+						break;
+					case 1:
+						rotate(Turn.RIGHT, false);
+						break;
 				}
 			}
 			// Choose the one with less visited time.
@@ -441,12 +441,12 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			checkStop();
 			rotate(Turn.AROUND,false);
 		}
-		else if (distanceToObstacle0(Direction.FORWARD) 
+		else if (distanceToObstacle0(Direction.FORWARD)
 				&& distanceToObstacle0(Direction.LEFT)) {
 			checkStop();
 			this.rotate(Turn.RIGHT,false);
 		}
-		else if (distanceToObstacle0(Direction.FORWARD) 
+		else if (distanceToObstacle0(Direction.FORWARD)
 				&& distanceToObstacle0(Direction.RIGHT)) {
 			checkStop();
 			rotate(Turn.LEFT,false);
@@ -458,10 +458,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]]++;
 		}
 	}
-	
-	/** 
+
+	/**
 	 * How robot explore when it is inside a room.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private void inRoomExplore() throws Exception {
@@ -605,22 +605,22 @@ public class Explorer extends ManualDriver implements RobotDriver{
 				if (robot.getMaze().getMazeConfiguration().getMazecells().hasNoWall(robot.getCurrentPosition()[0], robot.getCurrentPosition()[1], cdd) && !robot.getMaze().getMazeConfiguration().getMazecells().isInRoom(robot.getCurrentPosition()[0] + cdd.getDirection()[0], robot.getCurrentPosition()[1] + cdd.getDirection()[1])){
 					performRotation(robot.getCurrentDirection(), cdd);
 					for (int k = 0; k < doorList.size(); k ++) {
-							if (doorList.get(k)[0] == robot.getCurrentPosition()[0] && doorList.get(k)[1] == robot.getCurrentPosition()[1]) {
-								doorList.get(k)[2] += 1;
-								break;
-							}
+						if (doorList.get(k)[0] == robot.getCurrentPosition()[0] && doorList.get(k)[1] == robot.getCurrentPosition()[1]) {
+							doorList.get(k)[2] += 1;
+							break;
 						}
-						//walk out of the room
-						move1(1, false);
-						cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]] += 1;
-						break;
+					}
+					//walk out of the room
+					move1(1, false);
+					cellVisitTimes[robot.getCurrentPosition()[0]][robot.getCurrentPosition()[1]] += 1;
+					break;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Check if the robot is stopped. If it is, throw exception.
 	 * @throws Exception
@@ -631,10 +631,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			throw new Exception();
 		}
 	}
-	
+
 	/**
 	 * Check whether robot is stopped before canSeeExit()
-	 * 
+	 *
 	 * @param direction
 	 * @return whether robot can see the exit
 	 * @throws Exception
@@ -643,10 +643,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		checkStop();
 		return robot.canSeeExit(direction);
 	}
-	
+
 	/**
 	 * Check whether robot is stopped before.
-	 * 
+	 *
 	 * @param direction
 	 * @return whether the distance to the obstacle on certain direction is 0;
 	 * @throws Exception
@@ -710,10 +710,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 			}
 		}, 200);
 	}
-	
+
 	/**
 	 * Check whether robot is stopped before.
-	 * 
+	 *
 	 * @param direction
 	 * @return whether the distance to the obstacle on certain direction is 0;
 	 * @throws Exception
@@ -722,15 +722,15 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		checkStop();
 		return robot.distanceToObstacle(direction) != 0;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return the list contains cell's visit information
 	 */
 	public int[][] getCellVisitTimes(){
 		return cellVisitTimes;
 	}
-	
+
 	/**
 	 * Set the list contains cell's visit information
 	 * @param cellV
@@ -739,5 +739,3 @@ public class Explorer extends ManualDriver implements RobotDriver{
 		cellVisitTimes = cellV;
 	}
 }
-
-
