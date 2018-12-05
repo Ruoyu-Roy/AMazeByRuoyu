@@ -7,6 +7,8 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 //import generation.BSPNode;
 //import generation.Cells;
 
+import android.content.Context;
+
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,7 +37,7 @@ public class MazeFileWriter {
 	/**
 	 * Write maze content to a file
 	 */
-	public static void store(String filename, int width, int height, int rooms, int expected_partiters, BSPNode root, Cells cells, int[][] dists, int startX, int startY)
+	public static void store(String filename, int width, int height, int rooms, int expected_partiters, BSPNode root, Cells cells, int[][] dists, int startX, int startY, Context context)
 	{
 		 try {
 			 	// get a document 
@@ -51,7 +53,7 @@ public class MazeFileWriter {
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 				Transformer transformer = transformerFactory.newTransformer();
 				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File(filename));
+				StreamResult result = new StreamResult(new File(DataHolder.context.getFilesDir(),filename));
 		 
 				transformer.transform(source, result);
 			  } catch (ParserConfigurationException pce) {

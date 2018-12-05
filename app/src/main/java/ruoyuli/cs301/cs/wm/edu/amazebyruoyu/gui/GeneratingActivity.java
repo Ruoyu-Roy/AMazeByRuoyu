@@ -13,6 +13,8 @@ import android.media.MediaPlayer;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.io.File;
+
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.*;
 
@@ -37,7 +39,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     private MediaPlayer mediaPlayer;
     private String LOG_V = "Generating Activity: ";
     private int progress = 0;
-    //private MyTask task = new MyTask();
+    private MyTask task = new MyTask();
     private Builder builder; // selected maze generation algorithm
     private boolean perfect = false;
     private Handler handler = new Handler();
@@ -69,6 +71,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
 
         } else {
             setUpVariables();
+            loadMaze();
             //task.execute();
         }
     }
@@ -91,7 +94,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     public void newMaze(){
         Log.v(LOG_V, "Generating new maze (skill level: "+Integer.toString(skillLevel)+"; generating algorithm: "
         + generateAlgorithm + "; driver algorith: " + driverAlgorithm);
-
     }
 
     @Override
@@ -122,7 +124,43 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     @Override
     public void deliver(MazeConfiguration mazeConfig) {
         DataHolder.mazeConfiguration = mazeConfig;
+        if (skillLevel <= 3) {
+            String filename = "maze" + Integer.toString(skillLevel);
+            writeMazeFile(filename, mazeConfig);
+        }
         switchToPlay();
+    }
+
+    public void writeMazeFile(String string, MazeConfiguration mazeConfig) {
+        File file = new File(getApplicationContext().getFilesDir(), string);
+        MazeFileWriter mazeFileWriter = new MazeFileWriter();
+        MazeFileWriter.store(string, mazeConfig.getWidth(), mazeConfig.getHeight(),
+                0 ,0,
+                mazeConfig.getRootnode(),
+                mazeConfig.getMazecells(),
+                mazeConfig.getMazedists().getAllDistanceValues(),
+                mazeConfig.getStartingPosition()[0],
+                mazeConfig.getStartingPosition()[1],
+                DataHolder.context);
+    }
+
+    public void loadMaze() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String filename = "maze" + Integer.toString(skillLevel);
+                MazeFileReader reader = new MazeFileReader(filename, DataHolder.context);
+                if (reader.fileExist) {
+                    DataHolder.mazeConfiguration = reader.getMazeConfiguration();
+                    task.execute();
+                }
+                else {
+                    loading.setText("No maze at this level stored, Click back button.");
+                    game_rule.setText("No maze at this level stored, Click back button. Can only store maze at level 0-3");
+                    return;
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -147,13 +185,13 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     /*
     Create a background thread by AsyncTask to mimic the generating process
      */
-    /*
+
     class MyTask extends AsyncTask<Void, Integer, Void> {
             @Override
             public Void doInBackground(Void... params) {
                 while (progress < 100) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -170,7 +208,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
             public void onProgressUpdate(Integer... progress) {
                 super.onProgressUpdate(progress);
                 progressBar.setProgress(progress[0]);
-                loading.setText("Loading: " + progress[0] + "%");
+                loading.setText("Loading old maze: " + progress[0] + "%");
 
             }
 
@@ -197,7 +235,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
             }
 
         }
-        */
 
     /*
     This method enables user to get back to the menu screen by clicking the "back" button.
