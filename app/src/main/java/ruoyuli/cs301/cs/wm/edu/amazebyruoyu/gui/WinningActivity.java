@@ -36,6 +36,7 @@ public class WinningActivity extends AppCompatActivity {
     private int userPath;
     private int energyConsump;
     private String LOG_V = "WinningActivity: ";
+    private boolean media = true;
 
 
     /*
@@ -50,6 +51,7 @@ public class WinningActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.winning2);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
         Intent preIntent = getIntent();
         drvalgo = preIntent.getStringExtra("drvalgo");
         shortestPath = preIntent.getIntExtra("shortestPath", 30);
@@ -85,6 +87,9 @@ public class WinningActivity extends AppCompatActivity {
         Log.v(LOG_V, "Go back to title screen.");
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -115,8 +120,10 @@ public class WinningActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
         }
     }
 }

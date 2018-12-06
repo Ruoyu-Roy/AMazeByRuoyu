@@ -35,6 +35,7 @@ public class LosingActivity extends AppCompatActivity {
     private int userPath;
     private int energyConsump;
     private String LOG_V = "LosingActivity: ";
+    private boolean media = true;
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -48,6 +49,7 @@ public class LosingActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.losing_music);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
         Intent preIntent = getIntent();
         drvalgo = preIntent.getStringExtra("drvalgo");
         shortestPath = preIntent.getIntExtra("shortestPath", 0);
@@ -77,6 +79,9 @@ public class LosingActivity extends AppCompatActivity {
         Log.v(LOG_V, "Go back to title screen.");
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -107,8 +112,10 @@ public class LosingActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
         }
     }
 }

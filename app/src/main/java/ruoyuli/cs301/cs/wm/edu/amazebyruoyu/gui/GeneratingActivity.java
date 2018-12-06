@@ -44,6 +44,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     private boolean perfect = false;
     private Handler handler = new Handler();
     private MazeFactory mazeFactory = new MazeFactory();
+    private boolean media = true;
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -56,6 +57,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         mediaPlayer = MediaPlayer.create(this, R.raw.loading_music);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
         //task.resetTask();
         Intent previousIntent = getIntent();
         newMaze = previousIntent.getBooleanExtra("newMaze", true);
@@ -242,6 +244,9 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         //task.resetTask();
         //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
@@ -257,6 +262,9 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
             Log.v(LOG_V, "Manual Driver implemented. User will control the robot");
             Intent i = new Intent(this, PlayManuallyActivity.class);
             mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            media = false;
             startActivity(i);
             finish();
         }
@@ -265,6 +273,9 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
             Intent i = new Intent(this, PlayAnimationActivity.class);
             i.putExtra("driverAlgorithm", driverAlgorithm);
             mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            media = false;
             startActivity(i);
             finish();
         }
@@ -286,8 +297,10 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     @Override
     public void onPause() {
         super.onPause();
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
         }
     }
 }

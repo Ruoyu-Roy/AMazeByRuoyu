@@ -39,6 +39,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private int shortestPath;
     private int userPath = 0;
     private String LOG_V = "PlayManuallyActivity";
+    private boolean media = true;
     private MazeConfiguration mazeConfiguration;
     private MazePanel mazePanel;
     private StatePlaying statePlaying;
@@ -60,6 +61,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.playing_manually);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
         mazeConfiguration = DataHolder.mazeConfiguration;
         robot = new BasicRobot();
         driver = new ManualDriver();
@@ -108,6 +110,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
         disableButtons();
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("drvalgo", "Manual");
@@ -182,6 +187,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.v(LOG_V, "Go back to title screen.");
         //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -254,8 +262,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
         }
     }
 

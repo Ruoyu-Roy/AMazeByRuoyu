@@ -60,6 +60,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private boolean gameStop = false;
     private String driver;
     final private int TOTAL_ENERGY = 3000;
+    private boolean media = true;
 
     private MazeConfiguration mazeConfiguration;
     private MazePanel mazePanel;
@@ -97,6 +98,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.playing_anime);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
         energybar.setMax(3000);
         energybar.setProgress(3000);
         setButtons();
@@ -166,6 +168,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
@@ -184,6 +189,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
@@ -211,6 +219,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         // Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
@@ -311,5 +322,26 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Log.v(LOG_V, "Decrement map size.");
 
         Toast.makeText(getApplicationContext(), "Map Decre", Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+    Resume the music when the app is visible.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    /*
+    Stop the music when app is invisible.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+        }
     }
 }

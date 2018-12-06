@@ -36,6 +36,7 @@ public class AMazeActivity extends AppCompatActivity {
     private Spinner gen_spinner;
     private Spinner driver_spinner;
     private MediaPlayer mediaPlayer;
+    private boolean media = true;
 
     protected String DFS = "DFS",
             Prim = "Prim",
@@ -64,6 +65,7 @@ public class AMazeActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this, R.raw.title_music2);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+        media = true;
     }
 
     /*
@@ -177,6 +179,9 @@ public class AMazeActivity extends AppCompatActivity {
         intent.putExtra("manual", manual);
 
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         startActivity(intent);
         finish();
     }
@@ -200,6 +205,9 @@ public class AMazeActivity extends AppCompatActivity {
         intent.putExtra("driverAlgorithm", drvAlgorithm);
 
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer.release();
+        media = false;
         startActivity(intent);
         finish();
     }
@@ -219,9 +227,11 @@ public class AMazeActivity extends AppCompatActivity {
     @Override
 	public void onPause() {
 		super.onPause();
-		if (mediaPlayer.isPlaying()) {
-			mediaPlayer.pause();
-		}
+		if (media) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+        }
 	}
 
 }

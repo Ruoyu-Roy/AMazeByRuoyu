@@ -2,10 +2,10 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 /**
  * The manual driver let user to take control of the robot
- * 
+ *
  * @author ruoyuli
  */
-		
+
 
 //import generation.Distance;
 import java.util.logging.Handler;
@@ -26,8 +26,8 @@ public class ManualDriver implements RobotDriver{
 	public PlayAnimationActivity playAnimationActivity;
 	private Handler handler;
 
-	
-	
+
+
 
 	/**
 	 * Assigns a robot platform to the driver. 
@@ -100,7 +100,7 @@ public class ManualDriver implements RobotDriver{
 		// TODO Auto-generated method stub
 		return robot.getOdometerReading();
 	}
-	
+
 	/**
 	 * The key down method needed to let user control the robot.
 	 * @param key: the keyboard input
@@ -112,36 +112,36 @@ public class ManualDriver implements RobotDriver{
 			return false;
 		}
 		switch(key) {
-		case Left:
-			this.rotate(Turn.LEFT);
-			break;
-		case Right:
-			this.rotate(Turn.RIGHT);
-			break;
-		case Up:
-			this.move();
-			break;
-		case Down:
-			this.turnAround();
-			this.move();
-			this.turnAround();
-			break;
+			case Left:
+				this.rotate(Turn.LEFT);
+				break;
+			case Right:
+				this.rotate(Turn.RIGHT);
+				break;
+			case Up:
+				this.move();
+				break;
+			case Down:
+				this.turnAround();
+				this.move();
+				this.turnAround();
+				break;
 		}
 		return true;
 	}
-	
+
 	// Rotating the robot
 	public void rotate(Robot.Turn t) {
-			robot.rotate(t, true);
-			System.out.println(this.getEnergyConsumption());
+		robot.rotate(t, true);
+		System.out.println(this.getEnergyConsumption());
 	}
-	
+
 	// Move the robot one step ahead
 	public void move() {
 		robot.move(1, true);
 		System.out.println(this.getEnergyConsumption());
 	}
-	
+
 	// Turn the robot around (180 degrees)
 	public void turnAround() {
 		robot.rotate(Robot.Turn.AROUND, true);
