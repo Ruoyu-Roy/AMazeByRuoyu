@@ -26,6 +26,7 @@ public class Pledge extends ManualDriver implements RobotDriver{
 	private int counter = 0;
 	private boolean pledge = false;
 	private boolean needToMove = false;
+	boolean pause = false;
 	
 	//Contructor
 	public Pledge() {
@@ -39,6 +40,10 @@ public class Pledge extends ManualDriver implements RobotDriver{
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception{
+		if (pause) {
+			pause();
+			return true;
+		}
 		if (!robot.isAtExit()) {
 			checkStop();
 			pledge();
@@ -187,6 +192,24 @@ public class Pledge extends ManualDriver implements RobotDriver{
 	private boolean distanceToObstacleNot0(Direction direction) throws Exception {
 		checkStop();
 		return robot.distanceToObstacle(direction) != 0;
+	}
+
+	private void pause() {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					drive2Exit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		},100);
+	}
+
+	@Override
+	public void setPause() {
+		pause = !pause;
 	}
 
 }

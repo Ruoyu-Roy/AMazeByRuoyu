@@ -2,6 +2,7 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
 import android.content.Intent;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     private StatePlaying statePlaying;
     private Robot robot;
     private RobotDriver driver;
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -55,6 +57,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
         setUpVariables();
         setToggleButtons();
         setButtons();
+        mediaPlayer = MediaPlayer.create(this, R.raw.playing_manually);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
         mazeConfiguration = DataHolder.mazeConfiguration;
         robot = new BasicRobot();
         driver = new ManualDriver();
@@ -102,6 +107,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void toWin() {
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
         disableButtons();
+        mediaPlayer.stop();
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("drvalgo", "Manual");
@@ -175,6 +181,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        mediaPlayer.stop();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -230,6 +237,26 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /*
+    Resume the music when the app is visible.
+     */
+    @Override
+    public void onResume() {
+        mediaPlayer.start();
+        super.onResume();
+    }
+
+    /*
+    Stop the music when app is invisible.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
     }
 
 }

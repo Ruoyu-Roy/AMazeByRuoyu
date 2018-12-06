@@ -23,6 +23,7 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 	protected boolean initialPositionNotInRoom = false;
 	private Handler handler;
 	boolean needToMove = false;
+	boolean pause = false;
 	//Constructor
 	public WallFollower() {
 		handler = new Handler();
@@ -35,6 +36,10 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 	 */
 	@Override
 	public boolean drive2Exit() throws Exception {
+		if (pause) {
+			pause();
+			return true;
+		}
 		if (!robot.isAtExit()) {
 			// If the robot is inside a room and there's no wall on its left, 
 			// we need to move it to the wall on its left side and turn right.
@@ -203,6 +208,24 @@ public class WallFollower extends ManualDriver implements RobotDriver{
 	 */
 	public void setInitialPositionNotInRoom(boolean iniRoom) {
 		initialPositionNotInRoom = iniRoom;
+	}
+
+	private void pause() {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					drive2Exit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		},100);
+	}
+
+	@Override
+	public void setPause() {
+		pause = !pause;
 	}
 
 }

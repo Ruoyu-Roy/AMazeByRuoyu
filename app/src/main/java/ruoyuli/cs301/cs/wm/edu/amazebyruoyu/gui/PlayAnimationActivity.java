@@ -1,6 +1,7 @@
 package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -66,6 +67,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private Robot robot;
     private RobotDriver rdriver;
 
+    MediaPlayer mediaPlayer = new MediaPlayer();
+
     public Handler robotHandler = new Handler();
     public Runnable moverobot = new Runnable() {
         @Override
@@ -91,6 +94,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
         Intent preIntent = getIntent();
         driver = preIntent.getStringExtra("driverAlgorithm");
         setUpVariables();
+        mediaPlayer = MediaPlayer.create(this, R.raw.playing_anime);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
         energybar.setMax(3000);
         energybar.setProgress(3000);
         setButtons();
@@ -159,6 +165,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
+        mediaPlayer.stop();
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
@@ -176,6 +183,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
+        mediaPlayer.stop();
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
@@ -202,7 +210,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
-        Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+        mediaPlayer.stop();
+        // Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -276,12 +285,12 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 if (isChecked){
                     Log.v(LOG_V,"Pause button clicked. Pause the game.");
                     //Toast.makeText(getApplicationContext(), "Game Paused", Toast.LENGTH_SHORT).show();
-                    gameStop = true;
+                    rdriver.setPause();
                 }
                 else{
                     Log.v(LOG_V, "Start button clicked. Start the game.");
                     //Toast.makeText(getApplicationContext(), "Game Start", Toast.LENGTH_SHORT).show();
-                    gameStop = false;
+                    rdriver.setPause();
                 }
             }
         });

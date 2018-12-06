@@ -25,6 +25,7 @@ public class ManualDriver implements RobotDriver{
 	protected int distanceTraveled;
 	public PlayAnimationActivity playAnimationActivity;
 	private Handler handler;
+
 	
 	
 
@@ -145,6 +146,10 @@ public class ManualDriver implements RobotDriver{
 	public void turnAround() {
 		robot.rotate(Robot.Turn.AROUND, true);
 		System.out.println(this.getEnergyConsumption());
+	}
+
+	@Override
+	public void setPause() {
 	}
 
 }

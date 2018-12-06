@@ -28,6 +28,7 @@ public class Wizard extends ManualDriver implements RobotDriver{
 	//Basic variables
 	protected MazeConfiguration mazeConfig;
 	private Handler handler;
+	boolean pause = false;
 	//Constructor
 	public Wizard() {
 	    handler = new Handler();
@@ -41,6 +42,10 @@ public class Wizard extends ManualDriver implements RobotDriver{
 	@Override
 	public boolean drive2Exit() throws Exception {
 		// TODO Auto-generated method stub
+		if (pause) {
+			pause();
+			return true;
+		}
 		if (!robot.isAtExit()) {
 			checkStop();
 			CardinalDirection direction = robot.getCurrentDirection();
@@ -200,4 +205,22 @@ public class Wizard extends ManualDriver implements RobotDriver{
             }
         }, 200);
     }
+
+    private void pause() {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					drive2Exit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		},100);
+	}
+
+	@Override
+	public void setPause() {
+		pause = !pause;
+	}
 }

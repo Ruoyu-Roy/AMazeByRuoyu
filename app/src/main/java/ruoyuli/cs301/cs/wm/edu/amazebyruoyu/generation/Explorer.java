@@ -36,6 +36,7 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	private List<List<int[]>> mainList = new ArrayList<List<int[]>>();
 	private List<int[]> doorList = new ArrayList<int[]>();
 	Cells cells;
+	boolean pause = false;
 
 	//Contructor
 	public Explorer() {
@@ -62,6 +63,10 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	@Override
 	public boolean drive2Exit() throws Exception {
 		// The process will continue until robot reaches the exit.
+		if (pause) {
+			pause();
+			return true;
+		}
 		if (!robot.isAtExit()) {
 			checkStop();
 			int [] curP = robot.getCurrentPosition();
@@ -737,5 +742,23 @@ public class Explorer extends ManualDriver implements RobotDriver{
 	 */
 	public void setCellVisitTimes(int[][] cellV){
 		cellVisitTimes = cellV;
+	}
+
+	private void pause() {
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					drive2Exit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		},100);
+	}
+
+	@Override
+	public void setPause() {
+		pause = !pause;
 	}
 }

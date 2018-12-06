@@ -62,5 +62,7 @@ public interface RobotDriver {
 	int getPathLength() ;
 
 	void setAnimation(PlayAnimationActivity animation);
+
+	void setPause();
 	
 }
