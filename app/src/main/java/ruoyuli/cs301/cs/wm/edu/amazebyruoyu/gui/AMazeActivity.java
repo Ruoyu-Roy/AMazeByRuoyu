@@ -1,9 +1,12 @@
 package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -36,7 +39,8 @@ public class AMazeActivity extends AppCompatActivity {
     private Spinner gen_spinner;
     private Spinner driver_spinner;
     private MediaPlayer mediaPlayer;
-    private boolean media = true;
+    private ImageButton voiceB;
+    Vibrator vibrator;
 
     protected String DFS = "DFS",
             Prim = "Prim",
@@ -63,9 +67,16 @@ public class AMazeActivity extends AppCompatActivity {
         spinnerSet();
         addOnSpinnerListener();
         mediaPlayer = MediaPlayer.create(this, R.raw.title_music2);
+        mediaPlayer.setVolume(1.5f,1.5f);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-        media = true;
+        if (!DataHolder.voice) {
+            voiceB.setImageResource(R.drawable.voiceoff);
+            mediaPlayer.pause();
+        }
+        else {
+            voiceB.setImageResource(R.drawable.voiceon);
+        }
     }
 
     /*
@@ -77,6 +88,25 @@ public class AMazeActivity extends AppCompatActivity {
         difLevel = (TextView) findViewById(R.id.difLevel);
         gen_spinner = (Spinner) findViewById(R.id.gen_spinner);
         driver_spinner = (Spinner) findViewById(R.id.drv_spinner);
+        voiceB = (ImageButton) findViewById(R.id.voiceMaze);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+    }
+
+    public void voiceButton(View view) {
+        if (DataHolder.voice) {
+            DataHolder.voice = false;
+            if (mediaPlayer.isPlaying()){
+                mediaPlayer.pause();
+                voiceB.setImageResource(R.drawable.voiceoff);
+            }
+        }
+        else {
+            DataHolder.voice = true;
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                voiceB.setImageResource(R.drawable.voiceon);
+            }
+        }
     }
 
     /*
@@ -178,10 +208,8 @@ public class AMazeActivity extends AppCompatActivity {
         intent.putExtra("driverAlgorithm", drvAlgorithm);
         intent.putExtra("manual", manual);
 
+        vibrator.vibrate(VibrationEffect.createOneShot(50,3));
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         startActivity(intent);
         finish();
     }
@@ -204,10 +232,8 @@ public class AMazeActivity extends AppCompatActivity {
         intent.putExtra("generateAlgorithm", genAlgorithm);
         intent.putExtra("driverAlgorithm", drvAlgorithm);
 
+        vibrator.vibrate(VibrationEffect.createOneShot(50,3));
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         startActivity(intent);
         finish();
     }
@@ -217,7 +243,9 @@ public class AMazeActivity extends AppCompatActivity {
      */
     @Override
     public void onResume() {
-        mediaPlayer.start();
+        if (DataHolder.voice && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
         super.onResume();
     }
 
@@ -227,11 +255,9 @@ public class AMazeActivity extends AppCompatActivity {
     @Override
 	public void onPause() {
 		super.onPause();
-		if (media) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-            }
-        }
+		if (mediaPlayer.isPlaying()) {
+			mediaPlayer.pause();
+		}
 	}
 
 }

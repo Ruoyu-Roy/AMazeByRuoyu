@@ -42,4 +42,5 @@
     <string name="battery">ENERGY: 3000</string>
     <string name="losing0">News!!!</string>
     <string name="losing1">Murderer escaped!!!</string>
+    <string name="east">E</string>
 </resources>

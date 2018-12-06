@@ -2,16 +2,21 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 import android.widget.Toast;
 
 
 import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.R;
+import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.DataHolder;
 
 /**
  * Winning Activity is the implementation java file for winning_activity xml file.
@@ -29,14 +34,15 @@ public class WinningActivity extends AppCompatActivity {
     TextView win4;
     TextView win5;
     Button back;
+    private ImageButton voiceB;
     MediaPlayer mediaPlayer = new MediaPlayer();
+    private GestureDetectorCompat gestureDetectorCompat;
 
     private String drvalgo;
     private int shortestPath;
     private int userPath;
     private int energyConsump;
     private String LOG_V = "WinningActivity: ";
-    private boolean media = true;
 
 
     /*
@@ -49,9 +55,16 @@ public class WinningActivity extends AppCompatActivity {
         setContentView(R.layout.winning_activity);
         setUpVariables();
         mediaPlayer = MediaPlayer.create(this, R.raw.winning2);
+        mediaPlayer.setVolume(1.5f,1.5f);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-        media = true;
+        if (!DataHolder.voice) {
+            voiceB.setImageResource(R.drawable.voiceoff);
+            mediaPlayer.pause();
+        }
+        else {
+            voiceB.setImageResource(R.drawable.voiceon);
+        }
         Intent preIntent = getIntent();
         drvalgo = preIntent.getStringExtra("drvalgo");
         shortestPath = preIntent.getIntExtra("shortestPath", 30);
@@ -78,6 +91,32 @@ public class WinningActivity extends AppCompatActivity {
         win4 = (TextView) findViewById(R.id.win4);
         win5 = (TextView) findViewById(R.id.win5);
         back = (Button) findViewById(R.id.backw);
+        voiceB = (ImageButton) findViewById(R.id.voiceWin);
+        gestureDetectorCompat = new GestureDetectorCompat(this, new LearnGesture());
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureDetectorCompat.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    class LearnGesture extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+
+            if (event2.getX() > event1.getX()) {
+                Log.v(LOG_V, "Go back to title screen.");
+                //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
+                mediaPlayer.stop();
+                Intent intent = new Intent(WinningActivity.this, AMazeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            return true;
+        }
     }
 
     /*
@@ -87,9 +126,6 @@ public class WinningActivity extends AppCompatActivity {
         Log.v(LOG_V, "Go back to title screen.");
         Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -110,7 +146,9 @@ public class WinningActivity extends AppCompatActivity {
      */
     @Override
     public void onResume() {
-        mediaPlayer.start();
+        if (DataHolder.voice && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
         super.onResume();
     }
 
@@ -120,9 +158,24 @@ public class WinningActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (media) {
-            if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public void voiceButton(View view) {
+        if (DataHolder.voice) {
+            DataHolder.voice = false;
+            if (mediaPlayer.isPlaying()){
                 mediaPlayer.pause();
+                voiceB.setImageResource(R.drawable.voiceoff);
+            }
+        }
+        else {
+            DataHolder.voice = true;
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                voiceB.setImageResource(R.drawable.voiceon);
             }
         }
     }

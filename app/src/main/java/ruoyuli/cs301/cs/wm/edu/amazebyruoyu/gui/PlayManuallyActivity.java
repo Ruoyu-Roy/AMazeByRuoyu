@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -36,10 +40,14 @@ public class PlayManuallyActivity extends AppCompatActivity {
     ToggleButton clue;
     ImageButton size_up;
     ImageButton size_down;
+    TextView compass;
+    ImageView compassView;
+    Vibrator vibrator;
+    private ImageButton voiceB;
     private int shortestPath;
     private int userPath = 0;
     private String LOG_V = "PlayManuallyActivity";
-    private boolean media = true;
+    private String comp = "E";
     private MazeConfiguration mazeConfiguration;
     private MazePanel mazePanel;
     private StatePlaying statePlaying;
@@ -59,9 +67,16 @@ public class PlayManuallyActivity extends AppCompatActivity {
         setToggleButtons();
         setButtons();
         mediaPlayer = MediaPlayer.create(this, R.raw.playing_manually);
+        mediaPlayer.setVolume(1.5f,1.5f);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-        media = true;
+        if (!DataHolder.voice) {
+            voiceB.setImageResource(R.drawable.voiceoff);
+            mediaPlayer.pause();
+        }
+        else {
+            voiceB.setImageResource(R.drawable.voiceon);
+        }
         mazeConfiguration = DataHolder.mazeConfiguration;
         robot = new BasicRobot();
         driver = new ManualDriver();
@@ -90,6 +105,10 @@ public class PlayManuallyActivity extends AppCompatActivity {
         size_up = (ImageButton) findViewById(R.id.size_up_map);
         size_down = (ImageButton) findViewById(R.id.size_down_map);
         mazePanel = (MazePanel) findViewById(R.id.mazePanel);
+        compass = (TextView) findViewById(R.id.compass);
+        compassView = (ImageView) findViewById(R.id.imageView);
+        voiceB = (ImageButton) findViewById(R.id.voiceMan);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
     private void disableButtons() {
@@ -108,11 +127,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     public void toWin() {
         Log.v(LOG_V, "User wins the game, go to the winning screen.");
+        vibrator.vibrate(VibrationEffect.createOneShot(50,3));
         disableButtons();
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, WinningActivity.class);
         intent.putExtra("drvalgo", "Manual");
@@ -151,6 +168,19 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.v(LOG_V, "MOVE_RIGHT button clicked. User turns right.");
         ((ManualDriver) driver).rotate(Robot.Turn.RIGHT);
         //Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
+        if (comp.equalsIgnoreCase("E")) {
+            comp = "S";
+        }
+        else if (comp.equalsIgnoreCase("S")) {
+            comp = "W";
+        }
+        else if (comp.equalsIgnoreCase("W")) {
+            comp = "N";
+        }
+        else {
+            comp = "E";
+        }
+        compass.setText(comp);
     }
 
     /*
@@ -160,6 +190,19 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.v(LOG_V, "MOVE_LEFT button clicked. User turns left.");
         ((ManualDriver) driver).rotate(Robot.Turn.LEFT);
         //Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
+        if (comp.equalsIgnoreCase("E")) {
+            comp = "N";
+        }
+        else if (comp.equalsIgnoreCase("S")) {
+            comp = "E";
+        }
+        else if (comp.equalsIgnoreCase("W")) {
+            comp = "S";
+        }
+        else {
+            comp = "W";
+        }
+        compass.setText(comp);
     }
 
     /*
@@ -187,9 +230,6 @@ public class PlayManuallyActivity extends AppCompatActivity {
         Log.v(LOG_V, "Go back to title screen.");
         //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
         finish();
@@ -219,6 +259,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
@@ -226,6 +267,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
                 } else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
                     statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
+                    statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
@@ -252,7 +294,9 @@ public class PlayManuallyActivity extends AppCompatActivity {
      */
     @Override
     public void onResume() {
-        mediaPlayer.start();
+        if (DataHolder.voice && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
         super.onResume();
     }
 
@@ -262,9 +306,24 @@ public class PlayManuallyActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (media) {
-            if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public void voiceButton(View view) {
+        if (DataHolder.voice) {
+            DataHolder.voice = false;
+            if (mediaPlayer.isPlaying()){
                 mediaPlayer.pause();
+                voiceB.setImageResource(R.drawable.voiceoff);
+            }
+        }
+        else {
+            DataHolder.voice = true;
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                voiceB.setImageResource(R.drawable.voiceon);
             }
         }
     }

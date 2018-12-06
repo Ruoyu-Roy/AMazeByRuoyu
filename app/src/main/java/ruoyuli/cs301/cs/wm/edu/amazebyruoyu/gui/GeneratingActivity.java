@@ -2,10 +2,13 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 
 import android.media.AsyncPlayer;
 import android.os.AsyncTask;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.os.Handler;
@@ -32,6 +35,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     private TextView murder;
     private TextView loading;
     private ProgressBar progressBar;
+    private ImageButton voiceB;
     private boolean newMaze;
     private int skillLevel;
     private String generateAlgorithm;
@@ -44,7 +48,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     private boolean perfect = false;
     private Handler handler = new Handler();
     private MazeFactory mazeFactory = new MazeFactory();
-    private boolean media = true;
+    Vibrator vibrator;
 
     /*
     Override the onCreate method in AppCompatActivity class. This is a method that is the main thread
@@ -55,9 +59,8 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generating_activity);
         mediaPlayer = MediaPlayer.create(this, R.raw.loading_music);
+        mediaPlayer.setVolume(2.0f,2.0f);
         mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-        media = true;
         //task.resetTask();
         Intent previousIntent = getIntent();
         newMaze = previousIntent.getBooleanExtra("newMaze", true);
@@ -65,14 +68,21 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         driverAlgorithm = previousIntent.getStringExtra("driverAlgorithm");
         skillLevel = previousIntent.getIntExtra("skillLevel", 0);
         DataHolder.skillLevel = this.skillLevel;
+        setUpVariables();
+        mediaPlayer.start();
+        if (!DataHolder.voice) {
+            voiceB.setImageResource(R.drawable.voiceoff);
+            mediaPlayer.pause();
+        }
+        else {
+            voiceB.setImageResource(R.drawable.voiceon);
+        }
         if (newMaze) {
             setBuilder();
-            setUpVariables();
             buildNew();
             //task.execute();
 
         } else {
-            setUpVariables();
             loadMaze();
             //task.execute();
         }
@@ -88,6 +98,8 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         murder = (TextView) findViewById(R.id.murder);
         loading = (TextView) findViewById(R.id.loading);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        voiceB = (ImageButton) findViewById(R.id.voiceGen);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
     /*
@@ -244,9 +256,6 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         //task.resetTask();
         //Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
@@ -261,10 +270,8 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         if (driverAlgorithm.equals("Manual")) {
             Log.v(LOG_V, "Manual Driver implemented. User will control the robot");
             Intent i = new Intent(this, PlayManuallyActivity.class);
+            vibrator.vibrate(VibrationEffect.createOneShot(50,3));
             mediaPlayer.stop();
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            media = false;
             startActivity(i);
             finish();
         }
@@ -272,10 +279,8 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
             Log.v(LOG_V,driverAlgorithm + " Driver implemented. Robot will go for exit itself");
             Intent i = new Intent(this, PlayAnimationActivity.class);
             i.putExtra("driverAlgorithm", driverAlgorithm);
+            vibrator.vibrate(VibrationEffect.createOneShot(50,3));
             mediaPlayer.stop();
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            media = false;
             startActivity(i);
             finish();
         }
@@ -287,7 +292,9 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
      */
     @Override
     public void onResume() {
-        mediaPlayer.start();
+        if (DataHolder.voice && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
         super.onResume();
     }
 
@@ -297,9 +304,24 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
     @Override
     public void onPause() {
         super.onPause();
-        if (media) {
-            if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public void voiceButton(View view) {
+        if (DataHolder.voice) {
+            DataHolder.voice = false;
+            if (mediaPlayer.isPlaying()){
                 mediaPlayer.pause();
+                voiceB.setImageResource(R.drawable.voiceoff);
+            }
+        }
+        else {
+            DataHolder.voice = true;
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                voiceB.setImageResource(R.drawable.voiceon);
             }
         }
     }

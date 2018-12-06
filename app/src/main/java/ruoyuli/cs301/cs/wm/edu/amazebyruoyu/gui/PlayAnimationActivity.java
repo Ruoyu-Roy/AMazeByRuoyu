@@ -3,6 +3,8 @@ package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.gui;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +53,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
     TextView energy;
     ProgressBar energybar;
     Button back;
+    Vibrator vibrator;
+    private ImageButton voiceB;
 
     private int energyReserve = 3000;
     private int shortestPath;
@@ -60,7 +64,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
     private boolean gameStop = false;
     private String driver;
     final private int TOTAL_ENERGY = 3000;
-    private boolean media = true;
 
     private MazeConfiguration mazeConfiguration;
     private MazePanel mazePanel;
@@ -96,9 +99,16 @@ public class PlayAnimationActivity extends AppCompatActivity {
         driver = preIntent.getStringExtra("driverAlgorithm");
         setUpVariables();
         mediaPlayer = MediaPlayer.create(this, R.raw.playing_anime);
+        mediaPlayer.setVolume(1.5f,1.5f);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-        media = true;
+        if (!DataHolder.voice) {
+            voiceB.setImageResource(R.drawable.voiceoff);
+            mediaPlayer.pause();
+        }
+        else {
+            voiceB.setImageResource(R.drawable.voiceon);
+        }
         energybar.setMax(3000);
         energybar.setProgress(3000);
         setButtons();
@@ -137,6 +147,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
         size_up = (ImageButton) findViewById(R.id.size_up_map);
         size_down = (ImageButton) findViewById(R.id.size_down_map);
         mazePanel = (MazePanel) findViewById(R.id.mazePanelA);
+        voiceB = (ImageButton) findViewById(R.id.voiceAni);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
     private void setUpDriver() {
@@ -167,10 +179,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toWin(){
         Log.v(LOG_V, "Robot wins the game, go to the winning screen.");
+        vibrator.vibrate(VibrationEffect.createOneShot(50,3));
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Win Screen", Toast.LENGTH_SHORT).show();
@@ -188,10 +198,8 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     public void toLose(){
         Log.v(LOG_V, "Robot fails the game, go to the losing screen.");
+        vibrator.vibrate(VibrationEffect.createOneShot(50,3));
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         pathLength = robot.getOdometerReading();
         disableButtons();
         //Toast.makeText(getApplicationContext(), "To Lose Screen", Toast.LENGTH_SHORT).show();
@@ -219,9 +227,6 @@ public class PlayAnimationActivity extends AppCompatActivity {
     public void backButtonClicked(View view) {
         Log.v(LOG_V, "Go back to title screen.");
         mediaPlayer.stop();
-        mediaPlayer.reset();
-        mediaPlayer.release();
-        media = false;
         // Toast.makeText(getApplicationContext(), "Back to Menu", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, AMazeActivity.class);
         startActivity(intent);
@@ -262,6 +267,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
                     size_up.setVisibility(View.VISIBLE);
@@ -270,6 +276,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
                     statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
+                    statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Size Button Hiden", Toast.LENGTH_SHORT).show();
                     setButtons();
                 }
@@ -329,6 +336,9 @@ public class PlayAnimationActivity extends AppCompatActivity {
      */
     @Override
     public void onResume() {
+        if (DataHolder.voice && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
         super.onResume();
     }
 
@@ -338,9 +348,24 @@ public class PlayAnimationActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (media) {
-            if (mediaPlayer.isPlaying()) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public void voiceButton(View view) {
+        if (DataHolder.voice) {
+            DataHolder.voice = false;
+            if (mediaPlayer.isPlaying()){
                 mediaPlayer.pause();
+                voiceB.setImageResource(R.drawable.voiceoff);
+            }
+        }
+        else {
+            DataHolder.voice = true;
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                voiceB.setImageResource(R.drawable.voiceon);
             }
         }
     }

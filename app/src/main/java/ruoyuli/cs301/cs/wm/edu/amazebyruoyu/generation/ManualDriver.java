@@ -21,7 +21,7 @@ public class ManualDriver implements RobotDriver{
 	protected int width;
 	protected int height;
 	protected Distance distance;
-	protected float initialBattery = 3000;
+	protected float initialBattery = 300000;
 	protected int distanceTraveled;
 	public PlayAnimationActivity playAnimationActivity;
 	private Handler handler;

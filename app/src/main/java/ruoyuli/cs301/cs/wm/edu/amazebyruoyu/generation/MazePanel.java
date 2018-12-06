@@ -1,6 +1,8 @@
 package ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import  android.graphics.Path;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -18,10 +21,25 @@ public class MazePanel extends View {
     private Canvas canvas;
     private Paint paint;
     private Bitmap bitmap;
+    private Bitmap wallBMP;
+    private BitmapShader wallShader;
+    private Bitmap skyBitmap;
+    private Bitmap floorBitmap;
+    private BitmapShader skyShader;
+    private BitmapShader floorShader;
 
 
     public MazePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
+        wallBMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.wall);
+        wallBMP = Bitmap.createScaledBitmap(wallBMP, 1000, 900, false);
+        wallShader = new BitmapShader(wallBMP, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        skyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sky);
+        skyBitmap = Bitmap.createScaledBitmap(skyBitmap, 400, 400, false);
+        skyShader = new BitmapShader(skyBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        floorBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.floor);
+        floorBitmap = Bitmap.createScaledBitmap(floorBitmap, 100, 100, false);
+        floorShader = new BitmapShader(floorBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         bitmap = Bitmap.createBitmap(1280, 1280, Bitmap.Config.ARGB_8888);
         canvas = new Canvas(bitmap);
         paint = new Paint();
@@ -117,9 +135,21 @@ public class MazePanel extends View {
         canvas.drawRect(new Rect(x, y, x + width, y + height), paint);
     }
 
+    public void fillSky(int x, int y, int width, int height) {
+        paint.setShader(skyShader);
+        fillRect(x, y, width, height);
+        paint.setShader(null);
+    }
+
+    public void fillFloor(int x, int y, int width, int height){
+        paint.setShader(floorShader);
+        fillRect(x, y, width, height);
+        paint.setShader(null);
+    }
+
     public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
         //graphics.fillPolygon(xPoints, yPoints, nPoints);
-        paint.setStyle(Paint.Style.FILL);
+        paint.setShader(wallShader);
         Path path = new Path();
         path.moveTo(xPoints[0], yPoints[0]);
         for (int i = 1; i < nPoints; i++) {
@@ -127,6 +157,7 @@ public class MazePanel extends View {
         }
         path.lineTo(xPoints[0], yPoints[0]);
         canvas.drawPath(path, paint);
+        paint.setShader(null);
     }
 
     public void drawLine(int x1, int y1, int x2, int y2) {

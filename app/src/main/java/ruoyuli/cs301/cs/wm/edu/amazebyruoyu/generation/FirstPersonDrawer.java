@@ -206,7 +206,6 @@ public class FirstPersonDrawer {
 	/**
 	 * Draws a black and a grey rectangle to provide a background.
 	 * Note that this also erases previous drawings of maze or map.
-	 * @param graphics to draw on, must be not null
 	 */
 	private void drawBackground(MazePanel panel) {
 		// black rectangle in upper half of screen
@@ -215,8 +214,8 @@ public class FirstPersonDrawer {
 		panel.fillRect(0, 0, viewWidth, viewHeight/2);
 		// grey rectangle in lower half of screen
 		//graphics.setColor(Color.darkGray);
-		panel.setColor("dark gray");
-		panel.fillRect(0, viewHeight/2, viewWidth, viewHeight/2);
+		//panel.setColor("dark gray");
+		panel.fillFloor(0, viewHeight/2, viewWidth, viewHeight/2);
 	}
 	/**
 	 * Recursive method to explore tree of BSP nodes and draw all segments in leaf nodes 

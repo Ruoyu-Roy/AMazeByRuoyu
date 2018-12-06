@@ -7,4 +7,5 @@ public class DataHolder {
     public static int skillLevel;
     public static Order.Builder builder;
     public static Context context;
+    public static boolean voice = true;
 }
