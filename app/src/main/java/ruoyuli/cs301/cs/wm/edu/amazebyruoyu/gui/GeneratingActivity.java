@@ -318,6 +318,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         if (DataHolder.voice) {
             DataHolder.voice = false;
             if (mediaPlayer.isPlaying()){
+                Log.v(LOG_V, "Music off");
                 mediaPlayer.pause();
                 voiceB.setImageResource(R.drawable.voiceoff);
             }
@@ -325,6 +326,7 @@ public class GeneratingActivity extends AppCompatActivity implements Order{
         else {
             DataHolder.voice = true;
             if (!mediaPlayer.isPlaying()) {
+                Log.v(LOG_V, "Music on");
                 mediaPlayer.start();
                 voiceB.setImageResource(R.drawable.voiceon);
             }

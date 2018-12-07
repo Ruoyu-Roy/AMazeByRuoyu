@@ -173,6 +173,7 @@ public class WinningActivity extends AppCompatActivity {
         if (DataHolder.voice) {
             DataHolder.voice = false;
             if (mediaPlayer.isPlaying()){
+                Log.v(LOG_V, "Music off");
                 mediaPlayer.pause();
                 voiceB.setImageResource(R.drawable.voiceoff);
             }
@@ -180,6 +181,7 @@ public class WinningActivity extends AppCompatActivity {
         else {
             DataHolder.voice = true;
             if (!mediaPlayer.isPlaying()) {
+                Log.v(LOG_V, "Music on");
                 mediaPlayer.start();
                 voiceB.setImageResource(R.drawable.voiceon);
             }

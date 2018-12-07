@@ -258,11 +258,13 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Wall_Button clicked. Show the currently visible walls");
+                    map.setEnabled(false);
                     statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Wall Button on", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Log.v(LOG_V, "Wall_Button unclicked. Hide the currently visible walls");
+                    map.setEnabled(true);
                     statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Wall Button off", Toast.LENGTH_SHORT).show();
                 }
@@ -365,6 +367,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         if (DataHolder.voice) {
             DataHolder.voice = false;
             if (mediaPlayer.isPlaying()){
+                Log.v(LOG_V, "Music off");
                 mediaPlayer.pause();
                 voiceB.setImageResource(R.drawable.voiceoff);
             }
@@ -372,6 +375,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
         else {
             DataHolder.voice = true;
             if (!mediaPlayer.isPlaying()) {
+                Log.v(LOG_V, "Music on");
                 mediaPlayer.start();
                 voiceB.setImageResource(R.drawable.voiceon);
             }
