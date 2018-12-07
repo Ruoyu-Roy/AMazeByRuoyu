@@ -25,6 +25,11 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.*;
  * Generating Activity is the implementation java file for generating_activity xml file.
  * It takes care of the functionality of all elements in the generating screen
  *
+ * Bonus: This activity contains 1. a overall music controller which can turns on/off music.
+ * 2. A vibration that will happens when goes to the next activity.
+ * 3. A mediaplayer that plays the background music
+ * 4. A background picture.
+ *
  * @author ruoyuli
  */
 

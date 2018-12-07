@@ -37,6 +37,12 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Wizard;
  * Play Animation Activity is the implementation java file for animation_activity xml file.
  * It takes care of the functionality of all elements in the play animation screen
  *
+ * Bonus: This activity contains 1. a overall music controller which can turns on/off music.
+ *  * 2. A vibration that will happens when goes to the next activity.
+ *  * 3. A mediaplayer that plays the background music
+ *  * 4. A background picture.
+ *  * 5. Pictures on the floor, wall and sky. --> Style of "Detective Conan"
+ *
  * @author ruoyuli
  */
 
@@ -267,6 +273,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    wall.setEnabled(false);
                     statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
@@ -275,6 +282,7 @@ public class PlayAnimationActivity extends AppCompatActivity {
                 }
                 else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
+                    wall.setEnabled(true);
                     statePlaying.keyDown(Constants.UserInput.ToggleFullMap, 0, false);
                     statePlaying.keyDown(Constants.UserInput.ToggleLocalMap, 0, false);
                     //Toast.makeText(getApplicationContext(), "Size Button Hiden", Toast.LENGTH_SHORT).show();

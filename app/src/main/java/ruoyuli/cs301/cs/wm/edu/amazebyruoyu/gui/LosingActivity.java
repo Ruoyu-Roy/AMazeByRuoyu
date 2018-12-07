@@ -21,6 +21,12 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.DataHolder;
  * Losing Activity is the implementation java file for losing_activity xml file.
  * It takes care of the functionality of all elements in the losing screen
  *
+ * Bonus: This activity contains 1. a overall music controller which can turns on/off music.
+ *  * 2. A gesture detector that can detect the swiping from left to right, by doing which will
+ *       switch the activity to amazeavtivity.
+ *  * 3. A mediaplayer that plays the background music
+ *  * 4. A background picture.
+ *
  * @author ruoyuli
  */
 

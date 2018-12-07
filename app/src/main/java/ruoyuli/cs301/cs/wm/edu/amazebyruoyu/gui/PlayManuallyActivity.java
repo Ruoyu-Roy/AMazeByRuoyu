@@ -26,6 +26,13 @@ import ruoyuli.cs301.cs.wm.edu.amazebyruoyu.generation.Constants.UserInput;
  * Play Manually Activity is the implementation java file for manually_activity xml file.
  * It takes care of the functionality of all elements in the play manually screen
  *
+ * Bonus: This activity contains 1. a overall music controller which can turns on/off music.
+ *  * 2. A vibration that will happens when goes to the next activity.
+ *  * 3. A mediaplayer that plays the background music
+ *  * 4. A background picture.
+ *  * 5. Pictures on the floor, wall and sky. --> Style of "Detective Conan"
+ *  * 6. A compass that notifies user of their direction.
+ *
  * @author ruoyuli
  */
 
@@ -259,6 +266,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     Log.v(LOG_V, "Map_Button clicked. Show the map of the maze and show the size buttons");
+                    wall.setEnabled(false);
                     statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button Shown", Toast.LENGTH_SHORT).show();
@@ -266,6 +274,7 @@ public class PlayManuallyActivity extends AppCompatActivity {
                     size_down.setVisibility(View.VISIBLE);
                 } else {
                     Log.v(LOG_V, "Map_Button unclicked. Hide the map of the maze and the size buttons");
+                    wall.setEnabled(true);
                     statePlaying.keyDown(UserInput.ToggleFullMap, 0, true);
                     statePlaying.keyDown(UserInput.ToggleLocalMap, 0, true);
                     //Toast.makeText(getApplicationContext(), "Size Button hiden", Toast.LENGTH_SHORT).show();
